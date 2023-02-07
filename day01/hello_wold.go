@@ -5,6 +5,8 @@ import "fmt"
 var a string
 
 func main() {
+	//fmt.Printf("tom\tjack\n")
+	//fmt.Printf("helle\nworld")
 	//var v int = Sum(1,2)
 	//fmt.Println(v)
 	//a ="G"
@@ -48,12 +50,12 @@ func main() {
 	//	fmt.Printf("sum is the %d iteration\n", sum)
 	//}
 	//
-	//for i:=0; i < 25; i++ {
-	//	for j:=0; j<i+1; j++ {
-	//		fmt.Printf("%c", 'G')
-	//	}
-	//	fmt.Printf("\n")
-	//}
+	for i := 0; i < 15; i++ {
+		for j := 0; j < i+1; j++ {
+			fmt.Printf("%c", 'G')
+		}
+		fmt.Printf("\n")
+	}
 
 	//for i:= 1; i < 101; i++ {
 	//	switch {
@@ -74,9 +76,9 @@ func main() {
 	//for i := 0; i < 3; {
 	//	fmt.Println("Value of i:", i)
 	//}
-	s := Stack{1, 2, 3, 4}
-	i := s.Pop()
-	fmt.Println(i)
+	//s := Stack{1, 2, 3, 4}
+	//i := s.Pop()
+	//fmt.Println(i)
 
 }
 func Sum(a, b int) int {

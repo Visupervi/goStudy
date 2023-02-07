@@ -3,6 +3,11 @@ package main
 import "fmt"
 
 var a string
+var (
+	n1 = 90
+	n2 = "Rose"
+	n3 = "Jerry"
+)
 
 func main() {
 	//var v int = Sum(1,2)
@@ -74,10 +79,25 @@ func main() {
 	//for i := 0; i < 3; {
 	//	fmt.Println("Value of i:", i)
 	//}
-	s := Stack{1, 2, 3, 4}
-	i := s.Pop()
-	fmt.Println(i)
+	//s := Stack{1, 2, 3, 4}
+	//i := s.Pop()
+	//fmt.Println(i)
+	// 第一种：指定变量类型，生命后若不赋值，使用默认值
+	// 第二种：根据值自行判定变量类型（类型推导）
+	// 第三种：省略var,注意 := 左侧的变量不应该是已经声明过的否则会导致编译错误
+	//fmt.Println("helloworldhelloworldhelloworld",
+	//	"helloworldhelloworldhelloworldhelloworld",
+	//	"helloworldhelloworldhelloworld")
+	//
+	//fmt.Println("\n")
+	//fmt.Println("姓名\t性别\t籍贯\t住址\n张三\t男\t山东\t上海")
+	//var n1, n2, n3 int
+	//fmt.Println("n1=",n1, "n2=", n2, "n3=", n3)
 
+	//var n1, n2, n3 = 100, "tom", "jery"
+	//fmt.Println("n1=",n1, "n2=", n2, "n3=", n3)
+	//n1, n2, n3 := 100, "tom", "jery~~~"
+	fmt.Println("n1=", n1, "n2=", n2, "n3=", n3)
 }
 func Sum(a, b int) int {
 	return a + b
