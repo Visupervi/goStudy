@@ -10,115 +10,49 @@ var (
 )
 
 func main() {
-	//var v int = Sum(1,2)
-	//fmt.Println(v)
-	//a ="G"
-	//n()
-	//m()
-	//n()
-	//var str string = "This is an example of a string"
-	//fmt.Printf("T/F? Does the string \"%s\" have prefix %s?", str, "TH")
-	//fmt.Printf("%t\n", strings.HasPrefix(str, "Th"))
-	//var str string ="Hi, I'm Marc, Hi."
-	//fmt.Printf("The position of the first instance of \"Hi\" is:")
-	//fmt.Printf("%d\n", strings.Index(str, "Hi"))
-	//fmt.Printf("The position of the last instance of \"Hi\" is: ")
-	//fmt.Printf("%d\n", strings.LastIndex(str, "Hi"))
-	//fmt.Printf("The position of \"Burger\" is: ")
-	//fmt.Printf("%d\n", strings.Index(str, "Burger"))
-	//str := "The quick brown fox jumps over the lazy dog"
-	//sl := strings.Fields(str)
-	//fmt.Printf("Splitted in slice: %v\n", sl)
-	//for _, val := range sl {
-	//	fmt.Printf("%s - ", val) }
-	//fmt.Println()
-	//for _, item := range sl{
-	//	fmt.Printf("%s -item ", item)
-	//}
-	//str2 := "GO1|The ABC of Go|25"
-	//sl2 := strings.Split(str2, "|")
-	//fmt.Printf("Splitted in slice: %v\n", sl2)
-	//for _, val := range sl2 {
-	//	fmt.Printf("%s - ", val) }
-	//fmt.Println()
-	//str3 := strings.Join(sl2,";")
-	//fmt.Printf("sl2 joined by ;: %s\n", str3)
-	//t := time.Now()
-	//fmt.Printf("%02d.%02d.%4d\n", t.Day(), t.Month(), t.Year())
-	//fmt.Printf("%d\n", time.Now())
-	//var sum int = 0
-	//for i := 0; i < 15; i++ {
-	//	sum += i
-	//	fmt.Printf("This is the %d iteration\n", i)
-	//	fmt.Printf("sum is the %d iteration\n", sum)
-	//}
-	//
-	//for i:=0; i < 25; i++ {
-	//	for j:=0; j<i+1; j++ {
-	//		fmt.Printf("%c", 'G')
-	//	}
-	//	fmt.Printf("\n")
-	//}
+	// 数据类型
+	// 基本数据类型⬇️
 
-	//for i:= 1; i < 101; i++ {
-	//	switch {
-	//	case i%3 == 0 && i != 0 && i%5 != 0:
-	//		fmt.Printf("%s\n", "Fizz")
-	//	case i%3 == 0 && i%5==0 && i != 0:
-	//		fmt.Printf("%s\n", "FizzBuzz")
-	//	case i % 5 == 0 && i%3 != 0 && i != 0:
-	//		fmt.Printf("%s\n", "Buzz")
-	//	default:
-	//		fmt.Printf("%d\n", i)
-	//	}
-	//
-	//}
-	//for i := 0; ; i++ {
-	//	fmt.Println("Value of i is now:", i)
-	//}
-	//for i := 0; i < 3; {
-	//	fmt.Println("Value of i:", i)
-	//}
-	//s := Stack{1, 2, 3, 4}
-	//i := s.Pop()
-	//fmt.Println(i)
-	// 第一种：指定变量类型，生命后若不赋值，使用默认值
-	// 第二种：根据值自行判定变量类型（类型推导）
-	// 第三种：省略var,注意 := 左侧的变量不应该是已经声明过的否则会导致编译错误
-	//fmt.Println("helloworldhelloworldhelloworld",
-	//	"helloworldhelloworldhelloworldhelloworld",
-	//	"helloworldhelloworldhelloworld")
-	//
-	//fmt.Println("\n")
-	//fmt.Println("姓名\t性别\t籍贯\t住址\n张三\t男\t山东\t上海")
-	//var n1, n2, n3 int
-	//fmt.Println("n1=",n1, "n2=", n2, "n3=", n3)
+	// 数值型
+	// 1、整数类型（int,int8, int16, int32, int64,带符号： uint,uint8, uint16, uint32, uint64,）
 
-	//var n1, n2, n3 = 100, "tom", "jery"
-	//fmt.Println("n1=",n1, "n2=", n2, "n3=", n3)
-	//n1, n2, n3 := 100, "tom", "jery~~~"
-	fmt.Println("n1=", n1, "n2=", n2, "n3=", n3)
-}
-func Sum(a, b int) int {
-	return a + b
-}
-func n() {
-	print(a)
-}
-func m() {
-	a := "O"
-	print(a)
-}
+	// 类型     有无符号  占用存储空间     表示范围     备注
+	// int8     有       1个字节        -128～127
+	// int16    有       2个字节        -2^15~ 2^15-1
+	// int32    有       4个字节        -2^31~ 2^31-1
+	// int64    有       8个字节        -2^63~ 2^63-1
 
-type Stack []int
+	// 2、浮点型(float32, float64)
+	// 类型       占用存储空间     表示范围     备注
+	// float3     4个字节        -3.403e38~3.403e38
+	// float64    8个字节        -1.798e308~1.798e308
 
-func (st Stack) Pop() int {
-	v := 0
-	for ix := len(st) - 1; ix >= 0; ix-- {
-		if v = st[ix]; v != 0 {
-			st[ix] = 0
-			return v
-		}
-	}
-	return 0
+	// 浮点型数据都是带有符号的数据， 浮点数=符号位 + 指数位 + 尾数位
+	// 尾数位置可能有损失
+
+	var num1 float32 = -123.0000901
+	var num2 float64 = -123.0000901
+
+	fmt.Println(num1)
+	fmt.Println('\n')
+	fmt.Println(num2)
+	// 浮点型有固定的范围和字段长度，不受os的影响
+	// 浮点型默认是float64类型
+	// 浮点型常量有两种形式 1、十进制 2、科学计数形式
+	// 一般情况下使用float64
+
+	// 字符型
+	// 布尔型
+	// 字符串
+
+	// 派生/复杂数据类型⬇️
+
+	// 指针
+	// 数组
+	// 结构体
+	// 管道
+	// 函数
+	// 切片
+	// 接口
+	// map
 }
