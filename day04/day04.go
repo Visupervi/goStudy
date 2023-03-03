@@ -86,4 +86,23 @@ func main() {
 	// 方式二
 	str = strconv.FormatInt(int64(99), 10)
 	fmt.Printf("str type %T str=%v\n", str, str)
+
+	v := int64(-42)
+	s10 := strconv.FormatInt(v, 10)
+	fmt.Printf("%T, %v\n", s10, s10)
+	s16 := strconv.FormatInt(v, 16)
+	fmt.Printf("%T, %v\n", s16, s16)
+
+	// string 转成基本数据类型
+
+	str1 := string("false")
+	b := bool(true)
+	b, _ = strconv.ParseBool(str1)
+	fmt.Printf("b type %T b=%v\n", b, b)
+
+	str2 := string("12121112212")
+	b1 := int64(0)
+	b1, _ = strconv.ParseInt(str2, 10, 64)
+	fmt.Printf("b1 type %T b1=%v", b1, b1)
+
 }
