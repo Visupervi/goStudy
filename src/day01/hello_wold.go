@@ -50,9 +50,17 @@ func main() {
 	//	fmt.Printf("sum is the %d iteration\n", sum)
 	//}
 	//
-	for i := 0; i < 15; i++ {
-		for j := 0; j < i+1; j++ {
-			fmt.Printf("%c", 'G')
+	towerLevel := 15
+	for i := 0; i < towerLevel; i++ {
+		for k := 0; k < towerLevel-i; k++ {
+			fmt.Print(" ")
+		}
+		for j := 0; j < 2*i-1; j++ {
+			if j == 0 || i == towerLevel-1 || j == 2*i-2 {
+				fmt.Printf("%c", 'G')
+			} else {
+				fmt.Print(" ")
+			}
 		}
 		fmt.Printf("\n")
 	}
