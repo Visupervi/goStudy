@@ -3,7 +3,11 @@
   <component name="Go" enabled="true" />
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/pkg/mod/github.com/google/flatbuffers@v1.12.1/dart/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/pkg/mod/github.com/google/flatbuffers@v1.12.1/dart/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/pkg/mod/github.com/google/flatbuffers@v1.12.1/dart/build" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
