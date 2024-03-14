@@ -82,7 +82,7 @@ func main() {
 	//s := Stack{1, 2, 3, 4}
 	//i := s.Pop()
 	//fmt.Println(i)
-	// 第一种：指定变量类型，生命后若不赋值，使用默认值
+	// 第一种：指定变量类型，声明后若不赋值，使用默认值
 	// 第二种：根据值自行判定变量类型（类型推导）
 	// 第三种：省略var,注意 := 左侧的变量不应该是已经声明过的否则会导致编译错误
 	//fmt.Println("helloworldhelloworldhelloworld",
