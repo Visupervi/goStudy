@@ -73,3 +73,10 @@ func sum1(n1 int, n2 int) int {
 	fmt.Println("resres=", res)
 	return res
 }
+
+// 引用传递和值拷贝
+
+// 值类型： 基本数据类型int系列，bool、string、数组和结构体struct
+// 引用类型：指针、slice切片、map、管道chan、interface等都是引用类型
+
+//
