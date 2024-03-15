@@ -24,7 +24,8 @@ func main() {
 
 	//sum()
 	//randomNum()
-	sliceTest()
+	//sliceTest()
+	sliceTTest()
 }
 
 // 数组的定义
@@ -156,11 +157,49 @@ func randomNum() {
 // [1:3] 就是类似 Javascript中的slice函数，返回一个数组
 
 func sliceTest() {
-	var sliceDemo []int
+	//var sliceDemo []int
 	var intArr [5]int = [5]int{1, 2, 3, 4, 5}
 
-	sliceArr := intArr[1:3]
+	sliceArr := intArr[1:3] //
 
-	fmt.Println(sliceArr)
-	fmt.Println(sliceDemo)
+	//fmt.Println(sliceArr)
+	//fmt.Println(sliceDemo)
+	fmt.Printf("%p\n", &intArr[1])
+	fmt.Printf("%v\n", sliceArr)
+	fmt.Printf("%v\n", sliceArr[0])
+	fmt.Printf("%v", sliceArr[1])
+	//fmt.Printf("%v", sliceArr[2])
+
+}
+
+// 切片在内存中形式， 在内存中是有三部分组成，一个是指向的数据的地址，一个是长度，一个是容量
+
+// 切片的使用
+
+// 第一种
+
+// 第二种
+
+func makeSlice() {
+	var slice []int = make([]int, 4, 10)
+	slice[0] = 10
+}
+
+// 通过make创建的切片可以制定切片的大小和容量
+// 如果没有给切片的各个元素赋值，就会使用默认值
+// 通过make创建的切片的对应的数组，对外不可见
+
+//第三种 定义一个切片， 直接制定具体数组
+
+var sliceStr []string = []string{"tom", "jack", "jerry"}
+
+//
+
+func sliceTTest() {
+	arr := [...]int{10, 20, 30, 40, 50}
+	slice := arr[:]
+
+	for _, v := range slice {
+		fmt.Println(v)
+	}
 }
