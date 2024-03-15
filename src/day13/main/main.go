@@ -2,19 +2,29 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 func main() {
 
 	//arrTest1()
 
-	arr := [...]int{1, 2, 4}
+	//arr := [...]int{1, 2, 4}
 
-	test01(arr)
+	//test01(arr)
+	//
+	//fmt.Println(arr)
+	//test02(&arr)
+	//fmt.Println(arr)
+	//test1()
+	max := findMax()
 
-	fmt.Println(arr)
-	test02(&arr)
-	fmt.Println(arr)
+	fmt.Println(max)
+
+	//sum()
+	//randomNum()
+	sliceTest()
 }
 
 // 数组的定义
@@ -66,6 +76,7 @@ func arrTest1() {
 // go的数组属于值类型， 在默认的情况下是值传递，因此会进行值拷贝，数组间不会相互影响
 // 如果想再其他函数中去修改原来的数组，可以使用引用传递（指针的方式）。
 
+//
 func test01(arr [3]int) {
 	arr[0] = 99
 }
@@ -73,4 +84,83 @@ func test01(arr [3]int) {
 // 通过指针来修改数组
 func test02(arr *[3]int) {
 	(*arr)[0] = 100
+}
+
+func test1() {
+	var arr [26]byte
+	arr[0] = 'A'
+	for i := 1; i < len(arr); i++ {
+		arr[i] = arr[i-1] + 1
+	}
+	for _, v := range arr {
+		fmt.Printf("%c ", v)
+	}
+}
+
+func findMax() int {
+	numArr := [...]int{1, -1, 9, 90, 11}
+
+	max := numArr[0]
+
+	for _, v := range numArr {
+		if v > max {
+			max = v
+		}
+	}
+	return max
+}
+
+func sum() {
+	sum := 0
+	numArr := [...]int{1, -1, 9, 90, 12}
+	for _, v := range numArr {
+		sum += v
+	}
+
+	fmt.Println("sum=", sum)
+	fmt.Println("avg=", float64(sum)/float64(len(numArr))) // /
+}
+
+// 随机生成五个数， 反转打印
+
+func randomNum() {
+	var randoms [6]int
+	lenth := len(randoms)
+	rand.Seed(time.Now().UnixNano()) // 设置seed
+	for i := 0; i < 6; i++ {
+		n := rand.Intn(100) + 1
+		randoms[i] = n
+	}
+	//types.Array{}
+	fmt.Println(randoms)
+
+	// 反转数组
+
+	for i := 0; i < lenth/2; i++ {
+		var temp = randoms[i]
+		randoms[i] = randoms[lenth-i-1]
+		randoms[lenth-i-1] = temp
+	}
+
+	fmt.Println(randoms)
+
+}
+
+// 切片
+
+// 切片是数组的一个引用， 因此切片一个引用类型， 在进行传递的时候，遵循引用传递的机制
+// 切片的使用和数组类似，遍历切片、访问切片的元素和🍂切片的长度都一样
+// 切片的长度是可以变化的，因此切片是一个可以动态的数组
+// 切片的语法 var 变量名 []类型------》var a []int
+
+// [1:3] 就是类似 Javascript中的slice函数，返回一个数组
+
+func sliceTest() {
+	var sliceDemo []int
+	var intArr [5]int = [5]int{1, 2, 3, 4, 5}
+
+	sliceArr := intArr[1:3]
+
+	fmt.Println(sliceArr)
+	fmt.Println(sliceDemo)
 }
