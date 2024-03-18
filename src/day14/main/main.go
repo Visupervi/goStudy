@@ -18,7 +18,10 @@ func main() {
 	//
 	//fmt.Println(slice2)
 
-	sliceTest()
+	//sliceTest()
+	//strTest()
+	//stringTest()
+	chineseTest()
 }
 
 //append
@@ -47,3 +50,27 @@ func test(slice []int) {
 // string 和 slice的关系
 
 // string的底层还一个byte数组
+
+func strTest() {
+	var str string = "人人影视"
+	slice := str[3:]
+	fmt.Println(slice)
+}
+
+// 修改字符串方式
+// 转byte切片，再转string, 但是不能转中文
+func stringTest() {
+	var str string = "落霞与孤鹜齐飞"
+	slice := []byte(str)
+	slice[0] = '1'
+	fmt.Println(slice)
+
+}
+
+// 使用rune可以转中文的
+func chineseTest() {
+	str := "落霞与孤鹜齐飞"
+	slice := []rune(str)
+	slice[0] = '1'
+	fmt.Println(string(slice))
+}
