@@ -178,6 +178,8 @@ func sliceTest() {
 
 // 第一种
 
+var slice []int
+
 // 第二种
 
 func makeSlice() {

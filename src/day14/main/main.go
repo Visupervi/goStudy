@@ -21,7 +21,14 @@ func main() {
 	//sliceTest()
 	//strTest()
 	//stringTest()
-	chineseTest()
+	//chineseTest()
+	//slice := fib(10)
+	//
+	//fmt.Println(slice)
+	testArr := [...]int{10, 9, 20, 30, 40, 8, 7, 1, 100, 200}
+	slice := testArr[:]
+	bubuleRes := bubule(slice)
+	fmt.Println(bubuleRes)
 }
 
 //append
@@ -73,4 +80,28 @@ func chineseTest() {
 	slice := []rune(str)
 	slice[0] = '1'
 	fmt.Println(string(slice))
+}
+
+func fib(n int) []int64 {
+	fibs := make([]int64, n)
+	fibs[0] = 1
+	fibs[1] = 1
+	for i := 2; i < n; i++ {
+		fibs[i] = fibs[i-1] + fibs[i-2]
+	}
+	return fibs
+}
+
+// 冒泡
+func bubule(arr []int) []int {
+	for i := 0; i < len(arr); i++ {
+		for j := i + 1; j < len(arr); j++ {
+			if arr[i] > arr[j] {
+				temp := arr[i]
+				arr[i] = arr[j]
+				arr[j] = temp
+			}
+		}
+	}
+	return arr
 }
