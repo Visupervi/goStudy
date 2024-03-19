@@ -105,3 +105,20 @@ func bubule(arr []int) []int {
 	}
 	return arr
 }
+
+func middleFind(arr []int, find int, left int, right int) bool {
+	middle := (left + right) / 2
+	isFind := false
+	if left > right {
+		isFind = false
+	}
+
+	if arr[middle] > find {
+		middleFind(arr, find, middle+1, right)
+	} else if arr[middle] < find {
+		middleFind(arr, find, left, middle-1)
+	} else {
+		isFind = true
+	}
+	return isFind
+}
