@@ -115,7 +115,8 @@ func main() {
 		fmt.Println(err)
 	}
 	fmt.Println(string(jsonStr))
-	s1.test()
+
+	//s1.test()
 	//var s2 Stu
 
 	//s1 = Student(s2)
@@ -125,5 +126,6 @@ func main() {
 	// 方法和函数
 
 	// 方法是指作用在制定的数据类型上，自定义的数据类型都可以有方法
+	s1.test()
 
 }
