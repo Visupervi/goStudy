@@ -10,7 +10,7 @@ type Student struct {
 }
 
 func (s *Student) Reading(book string) {
-	fmt.Printf("%v正在reading%v", s.Name, book)
+	fmt.Printf("%v正在reading%v\n", s.Name, book)
 }
 
 // 通过匿名结构体实现继承

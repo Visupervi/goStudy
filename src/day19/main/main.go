@@ -1,6 +1,7 @@
 package main
 
 import (
+	"day19/Goods"
 	"day19/person"
 	"day19/student"
 	"fmt"
@@ -34,6 +35,32 @@ func main() {
 	gra := student.Graduate{Student: stu1}
 
 	gra.Reading("英语四级")
+
+	tv := Goods.TV{
+		Goods.Goods{
+			Name:  "海信电视",
+			Price: 2999.99,
+		},
+		Goods.Brand{
+			Name:    "海信",
+			Address: "青岛",
+		},
+	}
+
+	fmt.Println(tv)
+
+	tv1 := Goods.TV1{
+		&Goods.Goods{
+			Name:  "海信电视1",
+			Price: 2999.99,
+		},
+		&Goods.Brand{
+			Name:    "海信1",
+			Address: "青岛",
+		},
+	}
+
+	fmt.Println("tv1", *tv1.Goods, *tv1.Brand)
 	//account.LookMoney("123")
 	//account.SaveMoney(10, "123")
 	//account.GetMoney(10, "123")
