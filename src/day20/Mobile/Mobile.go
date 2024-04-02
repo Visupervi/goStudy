@@ -14,3 +14,7 @@ func (m Mobile) Start() {
 func (m Mobile) Stop() {
 	fmt.Println("手机停止作。。。")
 }
+
+func (m *Mobile) Call() {
+	fmt.Println("我是手机我可以打电话")
+}
