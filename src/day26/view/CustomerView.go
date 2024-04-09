@@ -1,10 +1,14 @@
 package view
 
-import "fmt"
+import (
+	"day26/service"
+	"fmt"
+)
 
 type CustomerView struct {
-	Key  string
-	Loop bool
+	Key             string
+	Loop            bool
+	CustomerService *service.CustomerService
 }
 
 func (cv *CustomerView) GetMainMenu() {
@@ -25,7 +29,7 @@ func (cv *CustomerView) GetMainMenu() {
 		case "3":
 			fmt.Println("删 除 用 户")
 		case "4":
-			fmt.Println("客 户 列 表")
+			cv.GetCustomerList()
 		case "5":
 			cv.Loop = false
 		default:
@@ -37,4 +41,16 @@ func (cv *CustomerView) GetMainMenu() {
 			break
 		}
 	}
+}
+
+func (cv *CustomerView) GetCustomerList() {
+	slice := cv.CustomerService.List()
+
+	fmt.Println("------------------------------------客户列表------------------------------------")
+	fmt.Println("编号\t姓名\t性别\t年龄\t电话\t\t邮箱")
+
+	for _, customer := range slice {
+		fmt.Println(customer.GetInfo())
+	}
+	fmt.Println("------------------------------------客户列表完成------------------------------------")
 }

@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 type Customer struct {
 	Name    string `json:"name"`
 	Id      string `json:"id"`
@@ -18,4 +20,9 @@ func NewCustomer(name string, age int, phone string, gender string, id string, e
 		Id:      id,
 		Email:   email,
 	}
+}
+
+func (c *Customer) GetInfo() string {
+	info := fmt.Sprintf("%v\t%v\t%v\t%v\t%v\t%v\t", c.Id, c.Name, c.Gender, c.Age, c.PhoneNo, c.Email)
+	return info
 }
