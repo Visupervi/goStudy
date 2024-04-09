@@ -13,21 +13,44 @@ func InitSplice() *CustomerService {
 
 	cs := &CustomerService{}
 	cs.customerNum = 1
-	//customer := model.Customer{
-	//	Name: "张三",
-	//	Id: "1",
-	//	Age: 18,
-	//	Gender: "女",
-	//	PhoneNo: "15522339988",
-	//	Email: "1234@gmail.com",
-	//}
-
-	customer := model.NewCustomer("张三", 18, "15522339988", "女", "1", "1234@gmail.com")
-
+	customer := model.NewCustomer("张三", 18, "15522339988", "女", "1234@gmail.com")
+	customer.Id = cs.customerNum
 	cs.customers = append(cs.customers, customer)
 	return cs
 }
 
 func (cs *CustomerService) List() []model.Customer {
 	return cs.customers
+}
+
+func (cs *CustomerService) InsertCustomer(customer model.Customer) bool {
+	cs.customerNum++
+	customer.Id = cs.customerNum
+	cs.customers = append(cs.customers, customer)
+	return true
+}
+
+func (cs *CustomerService) UpdateCustomer() bool {
+
+	return true
+}
+
+func (cs *CustomerService) DeleteCustomer(id int) bool {
+	index := cs.FindById(id)
+	if index > 0 {
+		cs.customers = append(cs.customers[:index], cs.customers[index+1:]...)
+	} else {
+		return false
+	}
+	return true
+}
+
+func (cs *CustomerService) FindById(id int) int {
+	index := -1
+	for _, customer := range cs.customers {
+		if customer.Id == id {
+			index = customer.Id
+		}
+	}
+	return index
 }
