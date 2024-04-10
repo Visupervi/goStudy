@@ -1,0 +1,13 @@
+func (cs *CustomerService) InsertCustomer(customer model.Customer) bool {
+	cs.customerNum++
+	customer.Id = cs.customerNum
+	cs.customers = append(cs.customers, customer)
+	return true
+}
+
+func (cs *CustomerService) InsertCustomer(customer model.Customer) bool {
+	cs.customerNum++
+	customer.Id = cs.customerNum
+	cs.customers = append(cs.customers, customer)
+	return true
+}
