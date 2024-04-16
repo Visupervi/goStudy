@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 )
 
 // json
@@ -62,4 +63,18 @@ func main() {
 	result, err := json.Marshal(slice)
 
 	fmt.Println("result=", string(result))
+
+	myHandler := Handler{}
+
+	http.Handle("/", &myHandler)
+
+	http.ListenAndServe(":8888", nil)
+
+}
+
+type Handler struct {
+}
+
+func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Hello Go World"))
 }
