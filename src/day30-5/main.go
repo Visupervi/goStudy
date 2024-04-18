@@ -25,6 +25,7 @@ func main() {
 		go readData(numChan, resChan, exitChan)
 	}
 
+	// <-ch是一种简写方式，也可以使用str := <-ch方式接收信道值。
 	for i := 0; i < 8; i++ {
 		<-exitChan
 	}
