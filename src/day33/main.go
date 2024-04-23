@@ -1,6 +1,7 @@
 package main
 
 import (
+	"day33/client"
 	"day33/entity"
 	"fmt"
 	"reflect"
@@ -91,6 +92,8 @@ func testStruct(i interface{}) {
 
 	res := rVal.Method(0).Call(params)
 	fmt.Println("res=", res[0].Int())
+
+	client.Client()
 
 }
 
