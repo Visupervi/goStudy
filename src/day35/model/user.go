@@ -2,6 +2,7 @@ package model
 
 import (
 	"day35/redisConfig"
+	"day37/client/model"
 	"fmt"
 )
 
@@ -30,8 +31,20 @@ func (u *User) Login(uId int, pwd string) (user *User, err error) {
 	}
 
 	if user.Pwd != pwd {
-		fmt.Println("密码不正确")
+		err = ERROR_USER_PWD
 		return
 	}
+	return
+}
+
+func (u *User) Registry(user *model.User) (err error, err1 error) {
+	c := redisConfig.Pool.Get()
+	defer c.Close()
+	ud := UserDao{
+		pool: redisConfig.Pool,
+	}
+
+	ud.InsertUser(user, c)
+	fmt.Println("ud", ud)
 	return
 }

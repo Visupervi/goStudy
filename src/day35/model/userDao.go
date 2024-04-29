@@ -1,6 +1,7 @@
 package model
 
 import (
+	"day37/client/model"
 	"day37/message"
 	"encoding/json"
 	"fmt"
@@ -42,7 +43,29 @@ func (ud *UserDao) GetUser(userId int, conn redis.Conn) (user *User, err error) 
 	return
 }
 
-func InsertUser() (user message.LoginMsg) {
+func (ud *UserDao) InsertUser(user *model.User, conn redis.Conn) (ur *model.User, err error) {
+
+	_, err = ud.GetUser(user.UserId, conn)
+	if err == nil {
+		err = ERROR_USER_EXISTS
+		return
+	}
+
+	data, err := json.Marshal(user)
+
+	if err != nil {
+		fmt.Println("********InsertUser json.Marshal失败********", err)
+		return
+	}
+	strData := string(data)
+	_, err = redis.Int64(conn.Do("hset", "users", user.UserId, strData))
+
+	if err != nil {
+		fmt.Println("********注册用户失败********", err)
+		err = ERROR_USER_FAIL
+		return
+	}
+	ur = user
 	return
 }
 

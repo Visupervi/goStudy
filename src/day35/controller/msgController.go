@@ -49,6 +49,10 @@ func (p *Process) MessageHandle(msg *message.Message) (err error) {
 	case message.RegistryType:
 		//	处理注册
 		//RegistryProcess(, msg)
+		uc := UserController{
+			Conn: p.Conn,
+		}
+		uc.RegistryProcess(msg)
 	case message.LoginResType:
 		//LoginResultHandle(conn, msg)
 

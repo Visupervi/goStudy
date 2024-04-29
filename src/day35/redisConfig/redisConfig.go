@@ -20,6 +20,5 @@ func InitRedis(address string, maxIdle int, maxActive int, idleTimeout time.Dura
 			return redis.Dial("tcp", address)
 		},
 	}
-	//return
 
 }

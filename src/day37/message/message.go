@@ -1,5 +1,9 @@
 package message
 
+import (
+	"day37/client/model"
+)
+
 const (
 	LoginMsgType = "LoginMsg"
 	LoginResType = "LoginResult"
@@ -26,4 +30,13 @@ type LoginResult struct {
 	Code   int    `json:"code"`
 	Error  string `json:"error"`
 	Result string `json:"result"`
+}
+
+type RegistryMsg struct {
+	User model.User `json:"user"`
+}
+
+type RegistryResult struct {
+	Code  int    `json:"code"`
+	Error string `json:"error"`
 }
