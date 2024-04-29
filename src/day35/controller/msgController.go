@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"day36/message"
-	"day36/utils"
+	"day37/message"
+	"day37/utils"
 	"fmt"
 	"net"
 )
@@ -26,8 +26,8 @@ func (p *Process) Process() {
 		}
 		p.MessageHandle(&msg)
 
-		fmt.Println("数据等于=", msg)
-		fmt.Println("数据等于type=", msg.Type)
+		//fmt.Println("数据等于=", msg)
+		fmt.Println("客户端发送的数据等于", msg)
 
 	}
 
@@ -41,7 +41,7 @@ func (p *Process) MessageHandle(msg *message.Message) (err error) {
 		//	处理登陆
 		//(conn, msg)
 
-		uc := &UserController{
+		uc := UserController{
 			Conn: p.Conn,
 		}
 

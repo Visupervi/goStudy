@@ -1,8 +1,9 @@
 package controller
 
 import (
-	"day36/message"
-	"day36/utils"
+	"day35/model"
+	"day37/message"
+	"day37/utils"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -29,16 +30,34 @@ func (u *UserController) LoginHandle(msg *message.Message) (err error) {
 	// 从redis获取数据
 	// dao.GetUser(msgData.UserId)
 	// 假设用户id =100, 密码等于123456就是成功的否则失败
-	if msgData.UserId == 100 && msgData.Pwd == "123456" {
+	//r, err := redis.String(c.Do("get", "name"))
 
+	// 用户输入的用户名和密码
+	user := model.User{}
+
+	// 接口返回的
+	result, err1 := user.Login(msgData.UserId, msgData.Pwd)
+
+	if err1 != nil {
+		fmt.Println("LoginHandle-----登陆失败-----", result)
+		res.Code = 500
+		res.Error = err1.Error()
+	} else {
 		res.Code = 200
 		res.Error = "0"
-	} else {
 
-		res.Code = 500
-		res.Error = "用户名或密码不正确"
+		// 序列化操作
+		strData, e := json.Marshal(result)
+
+		if e != nil {
+			fmt.Println("son.Marshal(result) 失败", e)
+			return
+		}
+		res.Result = string(strData)
 	}
 
+	//fmt.Println("result==>", result)
+	//json.Unmarshal([]byte(result), &user)
 	// 将res序列化
 	data, err := json.Marshal(res)
 
@@ -46,11 +65,9 @@ func (u *UserController) LoginHandle(msg *message.Message) (err error) {
 		fmt.Println("LoginHandle res json.Marshal 失败", err)
 		return
 	}
-
 	resMsg.Data = string(data)
 
 	// 将resMsg序列化
-
 	strResMsg, err := json.Marshal(resMsg)
 
 	if err != nil {
