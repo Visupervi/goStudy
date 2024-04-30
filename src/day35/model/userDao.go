@@ -1,8 +1,8 @@
 package model
 
 import (
-	"day37/client/model"
-	"day37/message"
+	"day35/message"
+	"day38/client/model"
 	"encoding/json"
 	"fmt"
 	"github.com/garyburd/redigo/redis"
@@ -13,7 +13,7 @@ type UserDao struct {
 	pool *redis.Pool
 }
 
-func (ud *UserDao) GetUser(userId int, conn redis.Conn) (user *User, err error) {
+func (ud *UserDao) GetUser(userId int, conn redis.Conn) (user *model.User, err error) {
 
 	//p := conn.Get() // 获取一个连接
 	//defer p.Close()
@@ -33,7 +33,7 @@ func (ud *UserDao) GetUser(userId int, conn redis.Conn) (user *User, err error) 
 		return
 	}
 
-	user = &User{}
+	user = &model.User{}
 	err = json.Unmarshal([]byte(res), user)
 	if err != nil {
 		fmt.Println("json.Unmarshal error", err)

@@ -2,16 +2,17 @@ package controller
 
 import (
 	"day35/model"
-	"day37/message"
-	"day37/utils"
+	"day38/message"
+	"day38/utils"
 	"encoding/json"
 	"fmt"
 	"net"
 )
 
 type UserController struct {
-	Conn net.Conn
-	Msg  message.Message
+	Conn   net.Conn
+	UserId int
+	//Msg  message.Message
 }
 
 func (u *UserController) LoginHandle(msg *message.Message) (err error) {
@@ -38,13 +39,22 @@ func (u *UserController) LoginHandle(msg *message.Message) (err error) {
 	} else {
 		res.Code = 200
 		res.Error = "0"
-		// 序列化操作
-		strData, e := json.Marshal(result)
-		if e != nil {
-			fmt.Println("son.Marshal(result) 失败", e)
-			return
+
+		// 向在线列表中添加数据
+		u.UserId = msgData.UserId
+		userManager.AddOnlineUser(u)
+
+		// 将useIds放到response中
+		for i, _ := range userManager.OnlineUsers {
+			res.OnlineUsers = append(res.OnlineUsers, i)
 		}
-		res.Result = string(strData)
+		//response := model.User{
+		//	UserId: result.UserId,
+		//	Pwd: result.Pwd,
+		//	UserName: result.UserName,
+		//}
+		res.Result = result
+
 	}
 
 	// 将res序列化
@@ -102,13 +112,6 @@ func (u *UserController) RegistryProcess(msg *message.Message) (err error) {
 	} else {
 		res.Code = 200
 		res.Error = "0"
-		// 序列化操作
-		//strData, e := json.Marshal(result)
-		//if e != nil {
-		//	fmt.Println("son.Marshal(result) 失败", e)
-		//	return
-		//}
-		//res.Re/ult = string(strData)
 	}
 
 	// 将res序列化

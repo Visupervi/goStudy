@@ -1,7 +1,7 @@
 package message
 
 import (
-	"day37/client/model"
+	"day38/client/model"
 )
 
 const (
@@ -27,10 +27,10 @@ type LoginMsg struct {
 }
 
 type LoginResult struct {
-	Code        int    `json:"code"`
-	Error       string `json:"error"`
-	Result      string `json:"result"`
-	OnlineUsers []int  `json:"onlineUsers"`
+	Code        int         `json:"code"`
+	Error       string      `json:"error"`
+	Result      *model.User `json:"result"`
+	OnlineUsers []int       `json:"onlineUsers"`
 }
 
 type RegistryMsg struct {

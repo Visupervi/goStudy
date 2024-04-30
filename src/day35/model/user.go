@@ -2,7 +2,7 @@ package model
 
 import (
 	"day35/redisConfig"
-	"day37/client/model"
+	"day38/client/model"
 	"fmt"
 )
 
@@ -13,7 +13,7 @@ type User struct {
 	UserName string `json:"userName"`
 }
 
-func (u *User) Login(uId int, pwd string) (user *User, err error) {
+func (u *User) Login(uId int, pwd string) (user *model.User, err error) {
 
 	c := redisConfig.Pool.Get()
 	defer c.Close()
