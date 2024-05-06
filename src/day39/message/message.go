@@ -10,6 +10,11 @@ const (
 	RegistryType        = "RegistryType"
 	NotifyUserStatusMsg = "NotifyUserStatus"
 )
+const (
+	Online = iota
+	Offline
+	BusyLine
+)
 
 type Message struct {
 	Type string `json:"type"`
@@ -42,7 +47,6 @@ type RegistryResult struct {
 	Code  int    `json:"code"`
 	Error string `json:"error"`
 }
-
 type NotifyUserStatus struct {
 	UserId int `json:"userId"`
 	Status int `json:"status"`

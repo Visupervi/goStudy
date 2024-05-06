@@ -2,7 +2,7 @@ package model
 
 import (
 	"day35/redisConfig"
-	"day38/client/model"
+	"day39/client/model"
 	"fmt"
 )
 

@@ -2,8 +2,8 @@ package controller
 
 import (
 	"day35/model"
-	"day38/message"
-	"day38/utils"
+	"day39/message"
+	"day39/utils"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -15,6 +15,46 @@ type UserController struct {
 	//Msg  message.Message
 }
 
+func (u *UserController) NotifyOther(userId int) {
+	for id, u := range userManager.OnlineUsers {
+		if id == userId {
+			continue
+		}
+		u.NotifyMyself(userId)
+
+	}
+}
+
+func (u *UserController) NotifyMyself(userId int) {
+	var msg message.Message
+	msg.Type = message.NotifyUserStatusMsg
+	var notifyMsg message.NotifyUserStatus
+	notifyMsg.UserId = userId
+	notifyMsg.Status = message.Online
+	data, err := json.Marshal(notifyMsg)
+	if err != nil {
+		fmt.Println("NotifyMyself json.Marshal error", err)
+		return
+	}
+	msg.Data = string(data)
+
+	data, err = json.Marshal(msg)
+	if err != nil {
+		fmt.Println("NotifyMyself json.Marshal error", err)
+		return
+	}
+
+	pipe := &utils.Pipeline{
+		Conn: u.Conn,
+	}
+
+	err = pipe.WritePkg(data)
+	fmt.Println("data=", data)
+	if err != nil {
+		fmt.Println("发送失败", err)
+	}
+
+}
 func (u *UserController) LoginHandle(msg *message.Message) (err error) {
 	var msgData message.LoginMsg
 	err = json.Unmarshal([]byte(msg.Data), &msgData)
@@ -39,10 +79,10 @@ func (u *UserController) LoginHandle(msg *message.Message) (err error) {
 	} else {
 		res.Code = 200
 		res.Error = "0"
-
 		// 向在线列表中添加数据
 		u.UserId = msgData.UserId
 		userManager.AddOnlineUser(u)
+		u.NotifyOther(msgData.UserId) // 通知其他客户端我上线
 
 		// 将useIds放到response中
 		for i, _ := range userManager.OnlineUsers {

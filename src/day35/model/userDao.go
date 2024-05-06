@@ -2,7 +2,7 @@ package model
 
 import (
 	"day35/message"
-	"day38/client/model"
+	"day39/client/model"
 	"encoding/json"
 	"fmt"
 	"github.com/garyburd/redigo/redis"

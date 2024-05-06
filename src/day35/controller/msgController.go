@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"day38/message"
-	"day38/utils"
+	"day39/message"
+	"day39/utils"
 	"fmt"
 	"net"
 )
@@ -24,14 +24,17 @@ func (p *Process) Process() {
 			fmt.Println("server reade error", err)
 			return
 		}
-		p.MessageHandle(&msg)
-
+		err = p.MessageHandle(&msg)
+		if err != nil {
+			fmt.Println("MessageHandle", err)
+			return
+		}
 		//fmt.Println("数据等于=", msg)
 		fmt.Println("客户端发送的数据等于", msg)
 
 	}
 
-	return
+	//return
 
 }
 func (p *Process) MessageHandle(msg *message.Message) (err error) {

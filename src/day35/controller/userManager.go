@@ -17,6 +17,8 @@ func init() {
 	}
 }
 func (um *UserManager) AddOnlineUser(up *UserController) {
+
+	fmt.Println("AddOnlineUser", up)
 	um.OnlineUsers[up.UserId] = up
 }
 

@@ -21,14 +21,13 @@ func Start() {
 	for {
 		fmt.Println("等待链接。。。")
 		conn, err := listener.Accept() // 返回的是interface
-
 		if err != nil {
 			fmt.Println("Accept Error:", err)
 		}
 		p := &controller.Process{
 			Conn: conn,
 		}
-		p.Process()
+		go p.Process()
 		//go controller.Process()
 
 	}
