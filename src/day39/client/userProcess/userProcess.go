@@ -57,56 +57,59 @@ func (up *UserProcess) Login(userId int, pwd string) (err error) {
 		fmt.Println("客户端写错误")
 	}
 	// 客户端读消息
-	for {
+	//p := &utils.Pipeline{
+	//	Conn: conn,
+	//}
+	serverMsg, error := p.ReadPkg()
 
-		p := &utils.Pipeline{
-			Conn: conn,
-		}
-		serverMsg, error := p.ReadPkg()
+	// 将数据反序列化
 
-		// 将数据反序列化
+	//response
 
-		//response
+	if error != nil {
+		fmt.Println("server reade error", error)
+		return
+	}
 
-		if error != nil {
-			fmt.Println("server reade error", error)
-			return
-		}
+	var response message.LoginResult
+	//_, err := json.Unmarshal([]byte(serverMsg.Data), &response)
+	fmt.Println("Login sendMsg.Data=", serverMsg.Data)
+	err = json.Unmarshal([]byte(serverMsg.Data), &response)
 
-		var response message.LoginResult
-		//_, err := json.Unmarshal([]byte(serverMsg.Data), &response)
-		fmt.Println("Login sendMsg.Data=", serverMsg.Data)
-		err = json.Unmarshal([]byte(serverMsg.Data), &response)
+	if error != nil {
+		fmt.Println("Unmarshal sendMsg.Data error", error)
+		return
+	}
 
-		if error != nil {
-			fmt.Println("Unmarshal sendMsg.Data error", error)
-			return
-		}
+	fmt.Println("response=", response)
 
-		fmt.Println("response=", response)
-
-		if response.Code == 200 {
-			// 显示在线列表
-			fmt.Println("当前在线用户列表如下")
-			for _, v := range response.OnlineUsers {
-				fmt.Printf("用户Id %d\n", v)
-				user := &model.User{
-					UserId: v,
-					Status: message.Online,
-				}
-				server.ClientOnlineUsers[v] = user
+	if response.Code == 200 {
+		// 显示在线列表
+		fmt.Println("当前在线用户列表如下")
+		for _, v := range response.OnlineUsers {
+			fmt.Printf("用户Id %d\n", v)
+			user := &model.User{
+				UserId: v,
+				Status: message.Online,
 			}
-			// 完成客户端onlineUsers的初始化
-
-			go server.LiveProcess(conn)
-			server.ShowMenu(userId)
-			fmt.Println("login Success")
-		} else {
-			fmt.Println(response.Error)
+			server.ClientOnlineUsers[v] = user
 		}
+		// 完成客户端onlineUsers的初始化
 
+		// 初始化currentUser
+		model.CurrentUser.UserId = userId
+		model.CurrentUser.Conn = conn
+		model.CurrentUser.Status = message.Online
+		// 显示菜单
+
+		go server.LiveProcess(conn)
+		//fmt.Println("login Success")
+	} else {
+		fmt.Println(response.Error)
+	}
+	for {
+		server.ShowMenu(userId)
 		//fmt.Println("serverMsg", serverMsg)
-
 	}
 
 	// 需要处理服务器返回的来消息

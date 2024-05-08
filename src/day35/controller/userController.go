@@ -182,3 +182,33 @@ func (u *UserController) RegistryProcess(msg *message.Message) (err error) {
 
 	return
 }
+
+func (uc *UserController) TransferMessage(msg *message.Message) (err error) {
+	var smsg message.SmsMsg
+	//err = json.Unmarshal([]byte(msg.Data), &msgData)
+	err = json.Unmarshal([]byte(msg.Data), &smsg)
+	if err != nil {
+		fmt.Println("TransferMessage 反序列化失败", err)
+		return
+	}
+
+	data, err1 := json.Marshal(msg)
+	if err1 != nil {
+		fmt.Println("TransferMessage 列化失败", err)
+		return
+	}
+	for k, c := range userManager.OnlineUsers {
+		if k != smsg.UserId {
+			pipe := &utils.Pipeline{
+				Conn: c.Conn,
+			}
+			err = pipe.WritePkg(data)
+			if err != nil {
+				fmt.Println("WritePkg fail", err)
+				return
+			}
+		}
+	}
+
+	return
+}

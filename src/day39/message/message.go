@@ -9,6 +9,7 @@ const (
 	LoginResType        = "LoginResult"
 	RegistryType        = "RegistryType"
 	NotifyUserStatusMsg = "NotifyUserStatus"
+	SmsMsgType          = "SmsMsg"
 )
 const (
 	Online = iota
@@ -50,4 +51,9 @@ type RegistryResult struct {
 type NotifyUserStatus struct {
 	UserId int `json:"userId"`
 	Status int `json:"status"`
+}
+
+type SmsMsg struct {
+	Content string `json:"content"`
+	model.User
 }

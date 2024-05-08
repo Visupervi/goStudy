@@ -19,7 +19,7 @@ func (p *Process) Process() {
 	}
 	for {
 		msg, err := pipe.ReadPkg()
-
+		fmt.Println("客户端发送的数据等于", msg)
 		if err != nil {
 			fmt.Println("server reade error", err)
 			return
@@ -30,7 +30,6 @@ func (p *Process) Process() {
 			return
 		}
 		//fmt.Println("数据等于=", msg)
-		fmt.Println("客户端发送的数据等于", msg)
 
 	}
 
@@ -57,8 +56,13 @@ func (p *Process) MessageHandle(msg *message.Message) (err error) {
 		}
 		uc.RegistryProcess(msg)
 	case message.LoginResType:
-		//LoginResultHandle(conn, msg)
-
+	//LoginResultHandle(conn, msg)
+	case message.SmsMsgType:
+		fmt.Println("接收消息", msg)
+		uc := UserController{
+			Conn: p.Conn,
+		}
+		uc.TransferMessage(msg)
 	}
 	return
 }
