@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<button id="send">发送信息</button>
+</body>
+<script>
+  const btn = document.querySelector("#send")
+  btn.addEventListener("click", () => {
+    fetch("http://localhost:9988/", {
+      method: 'post',
+      headers:{
+        "Content-type": "application/json;charset=utf-8"
+      },
+      body: JSON.stringify({
+        name:"Tom",
+        pwd: "123"
+      })
+    })
+  })
+</script>
+</html>
