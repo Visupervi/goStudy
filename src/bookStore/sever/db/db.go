@@ -16,7 +16,7 @@ var (
 //}
 
 func InitDB() {
-	Db, err = sql.Open("mysql", "root:Wei123456@@tcp(127.0.0.1:3306)/frontEndErrorLogs")
+	Db, err = sql.Open("mysql", "root:Wei123456@@tcp(127.0.0.1:3306)/bookStore")
 
 	if err != nil {
 		fmt.Println("err=", err)

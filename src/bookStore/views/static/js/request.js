@@ -5,7 +5,7 @@
  * @Param
  * @return
  */
-export const request = async (url = "", data = {}, type = "POST", method = "fetch") => {
+async function request(url = "", data = {}, type = "POST", method = "fetch") {
 
   if (type.toLocaleLowerCase() === "get") {
     let str = "";
@@ -57,7 +57,7 @@ export const request = async (url = "", data = {}, type = "POST", method = "fetc
       reqObj.send(sendData);
 
       reqObj.onreadystatechange = () => {
-        if(reqObj.readyState !== 4) return;
+        if (reqObj.readyState !== 4) return;
         if (reqObj.status >= 200 && reqObj.status < 400) {
           resolve(JSON.parse(reqObj.response));
         } else {

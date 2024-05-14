@@ -82,17 +82,16 @@
       <label for="floatingInput">UserName</label>
     </div>
     <div class="form-floating">
+      <input type="email" class="form-control goWeb-email" id="floatingEmail" placeholder="Email">
+      <label for="floatingEmail">Email</label>
+    </div>
+    <div class="form-floating">
       <input type="password" class="form-control goWeb-password" id="floatingPassword" placeholder="Password">
       <label for="floatingPassword">Password</label>
     </div>
 
-    <div class="checkbox mb-3">
-      <label>
-        <input type="checkbox" value="remember-me"> Remember me
-      </label>
-    </div>
   </form>
-  <button class="w-100 btn btn-lg btn-primary goWeb-submit">Sign in</button>
+  <button class="w-100 btn btn-lg btn-primary goWeb-submit">注册</button>
   <p class="mt-5 mb-3 text-muted">&copy; 2017–2022</p>
 </main>
 </body>
@@ -101,17 +100,19 @@
   const btn = document.querySelector(".goWeb-submit")
   const floatingInput = document.querySelector(".goWeb-userName")
   const floatingPassword = document.querySelector(".goWeb-password")
+  const floatingEmail = document.querySelector(".goWeb-email")
   btn.addEventListener("click", async (e) => {
     e.defaultPrevented
-    let res = await request("/login", {
+    let res = await request("/registry", {
       userName: floatingInput.value,
-      password: floatingPassword.value
+      password: floatingPassword.value,
+      email: floatingEmail.value
     }, "post", "fetch")
 
     // console.log("res====>", res)
 
     if (res.status === 200) {
-      window.location.href = "/pages/user/index.html"
+      window.location.href = "/pages/user/login.html"
     }
   })
 </script>
