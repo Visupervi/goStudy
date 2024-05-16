@@ -11,6 +11,14 @@ type BookStoreResult struct {
 	Data   interface{} `json:"data"`
 }
 
+type PageResult struct {
+	Page       int     `json:"page"`
+	Limit      int     `json:"limit"`
+	Total      int     `json:"total"`
+	TotalPages int     `json:"totalPages"`
+	Books      []*Book `json:"books"`
+}
+
 func (bsr *BookStoreResult) ResponseMsg(w http.ResponseWriter, data interface{}, status int) (str string, err error) {
 	w.WriteHeader(status)
 	bsr.Status = status
