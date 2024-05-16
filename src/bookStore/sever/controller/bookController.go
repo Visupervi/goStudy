@@ -35,3 +35,28 @@ func GetBookSlice(w http.ResponseWriter, r *http.Request) {
 	str, _ := res.ResponseMsg(w, bookRes, http.StatusOK)
 	fmt.Fprintf(w, str)
 }
+
+func InsertBooks(w http.ResponseWriter, r *http.Request) {
+	utils.SetCorsHeader(w, r)
+
+	var book model.Book
+
+	res := &model.BookStoreResult{}
+
+	err := json.NewDecoder(r.Body).Decode(&book)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
+	}
+	fmt.Println("book==", book)
+	err = service.InsertBook(&book)
+	if err != nil {
+		str, _ := res.ResponseMsg(w, "", http.StatusServiceUnavailable)
+		fmt.Fprintf(w, str)
+		return
+	}
+
+	str, _ := res.ResponseMsg(w, "success", http.StatusOK)
+
+	fmt.Fprintf(w, str)
+}

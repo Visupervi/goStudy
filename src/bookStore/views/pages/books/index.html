@@ -11,6 +11,7 @@
       padding: 0;
       margin: 0;
     }
+
     .bd-placeholder-img {
       font-size: 1.125rem;
       text-anchor: middle;
@@ -67,51 +68,55 @@
 </head>
 <body>
 <div class="container mt-5">
-  <h1 class="mb-4">图书商城</h1>
+  <div>
+    <h1 class="mb-4">图书商城</h1>
+    <a href="/pages/user/index.html">首页</a>
+    <a href="/pages/manage/index.html">去管理图书</a>
+  </div>
   <div class="row bookWrap">
     <!-- 图书卡片 -->
-<!--    <div class="col-md-4 mb-4">-->
-<!--      <div class="card">-->
-<!--        <img src="book1.jpg" class="card-img-top" alt="Book 1">-->
-<!--        <div class="card-body">-->
-<!--          <h5 class="card-title">书名 1</h5>-->
-<!--          <p class="card-text">作者 1</p>-->
-<!--          <p class="card-text">$10.00</p>-->
-<!--          <a href="#" class="btn btn-primary">购买</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="col-md-4 mb-4">-->
-<!--      <div class="card">-->
-<!--        <img src="book2.jpg" class="card-img-top" alt="Book 2">-->
-<!--        <div class="card-body">-->
-<!--          <h5 class="card-title">书名 2</h5>-->
-<!--          <p class="card-text">作者 2</p>-->
-<!--          <p class="card-text">$15.00</p>-->
-<!--          <a href="#" class="btn btn-primary">购买</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <div class="col-md-4 mb-4">-->
-<!--      <div class="card">-->
-<!--        <img src="book3.jpg" class="card-img-top" alt="Book 3">-->
-<!--        <div class="card-body">-->
-<!--          <h5 class="card-title">书名 3</h5>-->
-<!--          <p class="card-text">作者 3</p>-->
-<!--          <p class="card-text">$20.00</p>-->
-<!--          <a href="#" class="btn btn-primary">购买</a>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
+    <!--    <div class="col-md-4 mb-4">-->
+    <!--      <div class="card">-->
+    <!--        <img src="book1.jpg" class="card-img-top" alt="Book 1">-->
+    <!--        <div class="card-body">-->
+    <!--          <h5 class="card-title">书名 1</h5>-->
+    <!--          <p class="card-text">作者 1</p>-->
+    <!--          <p class="card-text">$10.00</p>-->
+    <!--          <a href="#" class="btn btn-primary">购买</a>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <div class="col-md-4 mb-4">-->
+    <!--      <div class="card">-->
+    <!--        <img src="book2.jpg" class="card-img-top" alt="Book 2">-->
+    <!--        <div class="card-body">-->
+    <!--          <h5 class="card-title">书名 2</h5>-->
+    <!--          <p class="card-text">作者 2</p>-->
+    <!--          <p class="card-text">$15.00</p>-->
+    <!--          <a href="#" class="btn btn-primary">购买</a>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <div class="col-md-4 mb-4">-->
+    <!--      <div class="card">-->
+    <!--        <img src="book3.jpg" class="card-img-top" alt="Book 3">-->
+    <!--        <div class="card-body">-->
+    <!--          <h5 class="card-title">书名 3</h5>-->
+    <!--          <p class="card-text">作者 3</p>-->
+    <!--          <p class="card-text">$20.00</p>-->
+    <!--          <a href="#" class="btn btn-primary">购买</a>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
   </div>
   <!-- 分页 -->
   <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
-      <li class="page-item"><a class="page-link" href="#">上一页</a></li>
-      <li class="page-item"><a class="page-link" href="#">1</a></li>
-      <li class="page-item"><a class="page-link" href="#">2</a></li>
-      <li class="page-item"><a class="page-link" href="#">3</a></li>
-      <li class="page-item"><a class="page-link" href="#">下一页</a></li>
+<!--      <li class="page-item"><a class="page-link" href="#">上一页</a></li>-->
+<!--      <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+<!--      <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--      <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+<!--      <li class="page-item"><a class="page-link" href="#">下一页</a></li>-->
     </ul>
   </nav>
 </div>
@@ -123,16 +128,17 @@
 <script src="/static/js/request.js"></script>
 <script>
   // /getBooks
-  getBooks()
+  getBooks(1,10)
 
-  async function getBooks() {
+  async function getBooks(page, limit) {
     let res = await request("/getBooks", {
-      page: 1,
-      limit: 10
+      page: page,
+      limit: limit
     }, "post", "fetch")
     if (res.status === 200) {
       if (res.data.books.length > 0) {
         createBookList(res.data.books)
+        createPagination(res.data.totalPages)
       }
     }
     // console.log("res-----", res)
@@ -162,6 +168,40 @@
 
     bookWrap.appendChild(fragment)
   }
+
+
+  function createPagination(total) {
+    const pagination = document.querySelector(".pagination")
+    pagination.innerHTML = ""
+    const fragment = document.createDocumentFragment()
+    let pre = document.createElement("li")
+    // pre.className = "page-item"
+    // pre.innerHTML = `<a className="page-link" href="javascript:;">上一页</a>`
+    // fragment.appendChild(pre)
+    for (let i = 0; i < total; i++) {
+      let li = document.createElement("li")
+      li.className = "page-item"
+      li.innerHTML = `<button className="page-link btn btn-primary" href="javascript:;">${i + 1}</button>`
+      fragment.appendChild(li)
+    }
+    // let next = document.createElement("li")
+    // next.className = "page-item"
+    // next.innerHTML = `<a className="page-link" href="javascript:;">下一页</a>`
+    // fragment.appendChild(next)
+    pagination.appendChild(fragment)
+  }
+
+  function PaginationClick(){
+    const pagination = document.querySelector(".pagination")
+    pagination.addEventListener("click", (event)=>{
+      event.preventDefault()
+      // console.log("event", event.target.innerHTML)
+
+      getBooks(event.target.innerHTML * 1, 10)
+    })
+  }
+
+  PaginationClick();
 </script>
 </body>
 </html>

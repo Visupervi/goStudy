@@ -16,7 +16,8 @@ func TestUser(t *testing.T) {
 	//t.Run("检查用户", testGetUsers)
 	//t.Run("根据用户名检查用户", testGetUserByName)
 	//t.Run("查询所有图书", testGetBooks)
-	t.Run("分页查询图书", testGetBooksByPage)
+	//t.Run("分页查询图书", testGetBooksByPage)
+	t.Run("插入图书测试", testInsertBook)
 }
 
 func testAddUser(t *testing.T) {
@@ -57,4 +58,17 @@ func testGetBooksByPage(t *testing.T) {
 	res, _ := GetBooksByPage(1, 10)
 
 	fmt.Println("res", res)
+}
+
+func testInsertBook(t *testing.T) {
+	book := &model.Book{
+		Title:   "西游记",
+		Author:  "吴承恩",
+		Price:   20,
+		Sales:   10000,
+		Stock:   10000,
+		ImgPath: "static/img/西游记.png",
+	}
+
+	InsertBook(book)
 }

@@ -73,7 +73,7 @@ func GetBooks() ([]*model.Book, error) {
 		return nil, error
 	}
 	defer db.Close()
-	sqlStr := " select id,title,author,price,sales,stock,img_path from books"
+	sqlStr := "select id,title,author,price,sales,stock,img_path from books"
 	rows, err := db.Query(sqlStr)
 	defer rows.Close()
 	if err != nil {
@@ -87,4 +87,20 @@ func GetBooks() ([]*model.Book, error) {
 		books = append(books, book)
 	}
 	return books, nil
+}
+
+func InsertBook(b *model.Book) (err error) {
+	db, error := db.ConnectDB()
+	if error != nil {
+		return error
+	}
+	defer db.Close()
+	sqlStr := "insert into books(title,author,price,sales,stock,img_path) values(?,?,?,?,?,?)"
+	_, err = db.Exec(sqlStr, b.Title, b.Author, b.Price, b.Sales, b.Stock, b.ImgPath)
+
+	//fmt.Println("res", res)
+	if err != nil {
+		return err
+	}
+	return nil
 }
