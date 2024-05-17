@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Management Table with Bootstrap</title>
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .edit-btn, .delete-btn {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="container mt-5">
+  <h2 class="mb-4">Book Management Table with Bootstrap</h2>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Book Title</th>
+      <th>Author</th>
+      <th>Price</th>
+      <th>Sales</th>
+      <th>Stock</th>
+      <th>ImagePath</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="table-body">
+    <tr>
+      <td class="book-title">The Great Gatsby</td>
+      <td class="author">F. Scott Fitzgerald</td>
+      <td class="price">20</td>
+      <td class="sales">20</td>
+      <td class="stock">20</td>
+      <td class="imgPath">static/img/1.png</td>
+      <td>
+        <span class="edit-btn text-primary mr-2">Edit</span>
+        <span class="delete-btn text-danger">Delete</span>
+      </td>
+    </tr>
+    <tr>
+      <td class="book-title">To Kill a Mockingbird</td>
+      <td class="author">Harper Lee</td>
+      <td class="price">20</td>
+      <td class="sales">20</td>
+      <td class="stock">20</td>
+      <td class="imgPath">static/img/1.png</td>
+      <td>
+        <span class="edit-btn text-primary mr-2">Edit</span>
+        <span class="delete-btn text-danger">Delete</span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<script src="/static/js/request.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.edit-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        let row = this.closest('tr');
+        let titleCell = row.querySelector('.book-title');
+        let authorCell = row.querySelector('.author');
+        let priceCell = row.querySelector('.price');
+        let salesCell = row.querySelector('.sales');
+        let stockCell = row.querySelector('.stock');
+        let imgCell = row.querySelector('.imgPath');
+        let isEditing = row.classList.contains('editing');
+
+        if (isEditing) {
+
+          // console.log(titleCell.querySelector('input').value)
+          let book = {
+            title: titleCell.querySelector('input').value,
+            author: authorCell.querySelector('input').value,
+            price: priceCell.querySelector('input').value * 1,
+            sales: salesCell.querySelector('input').value * 1,
+            stock: stockCell.querySelector('input').value * 1,
+            imgPath: imgCell.querySelector('input').value
+          };
+          // console.log("savesave")
+          // console.log("savesave")
+          addBook(book)
+          titleCell.innerHTML = titleCell.querySelector('input').value;
+          authorCell.innerHTML = authorCell.querySelector('input').value;
+          priceCell.innerHTML = priceCell.querySelector('input').value;
+          salesCell.innerHTML = salesCell.querySelector('input').value;
+          stockCell.innerHTML = stockCell.querySelector('input').value;
+          imgCell.innerHTML = imgCell.querySelector('input').value;
+          // let imgCell = row.querySelector('.imgPath');
+
+          // console.log("titleCell.querySelector('input').value;",titleCell.querySelector('input').value)
+          this.textContent = 'Edit';
+        } else {
+          titleCell.innerHTML = `<input type="text" class="form-control bookTitle" value="${titleCell.textContent}">`;
+          authorCell.innerHTML = `<input type="text" class="form-control author" value="${authorCell.textContent}">`;
+          stockCell.innerHTML = `<input type="number" class="form-control stock" value="${stockCell.textContent}">`;
+          salesCell.innerHTML = `<input type="number" class="form-control sales" value="${salesCell.textContent}">`;
+          priceCell.innerHTML = `<input type="number" class="form-control price" value="${priceCell.textContent}">`;
+          imgCell.innerHTML = `<input type="text" class="form-control imgPath" value="${imgCell.textContent}">`;
+          this.textContent = 'Save';
+
+
+        }
+        row.classList.toggle('editing');
+      });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        let row = this.closest('tr');
+        row.remove();
+      });
+    });
+  });
+
+  // const table = document.querySelector(".table")
+  // table.addEventListener("click", event => {
+  //
+  //   console.log("event.target", event.target.textContent)
+  //   // if (event.target.in)
+  // })
+
+  async function addBook(book){
+
+    console.log("document.querySelector(\".bookTitle\")", book)
+
+
+    console.log("book", book)
+    let res = await request("/addBook", {...book}, "post", "fetch")
+
+    console.log('res', res)
+
+  }
+</script>
+</body>
+</html>
