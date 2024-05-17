@@ -244,15 +244,18 @@
       }
     }
 
+    return res
+
   }
 
   modalBtnClick()
+  const myModal = new bootstrap.Modal(document.querySelector(".modal"), {
+    keyboard: false
+  })
 
   function modalBtnClick() {
     try {
-      const myModal = new bootstrap.Modal(document.querySelector(".modal"), {
-        keyboard: false
-      })
+
       document.querySelector(".modal-btn").addEventListener("click", () => {
         // document.querySelector(".modal").classList.toggle("show")
         myModal.show()
@@ -261,9 +264,11 @@
       console.log('e', e)
     }
   }
+
   saveBook()
-  function saveBook(){
-    document.querySelector(".save-btn").addEventListener("click", ()=>{
+
+  function saveBook() {
+    document.querySelector(".save-btn").addEventListener("click", () => {
       let book = {
         title: document.querySelector('#inputTitle').value,
         author: document.querySelector('#inputAuthor').value,
@@ -275,7 +280,12 @@
 
       // console.log(book)
 
-      addBook(book)
+      let res = addBook(book)
+
+      if (res.status === 200) {
+        myModal.hide()
+        getAllBooks()
+      }
     })
   }
 
