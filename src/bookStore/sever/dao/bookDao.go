@@ -104,3 +104,18 @@ func InsertBook(b *model.Book) (err error) {
 	}
 	return nil
 }
+
+func DeleteBook(id int) error {
+	db, error := db.ConnectDB()
+	if error != nil {
+		return error
+	}
+	defer db.Close()
+
+	sqlStr := "delete from books where id = ?"
+	_, err := db.Exec(sqlStr, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}

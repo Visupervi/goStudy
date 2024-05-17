@@ -9,129 +9,281 @@
     .edit-btn, .delete-btn {
       cursor: pointer;
     }
+
+    .show {
+      display: block;
+    }
   </style>
+  <script src="/static/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<div class="container mt-5">
-  <h2 class="mb-4">Book Management Table with Bootstrap</h2>
+<div class="container mt-5 position-relative">
+
+  <h2 class="mb-4">图书管理</h2>
+
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary modal-btn" style="margin-bottom: 10px">
+    添加图书
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">添加图书</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body row mb-12">
+          <form>
+            <div class="row mb-3">
+              <label for="inputTitle" class="col-sm-2 col-form-label">图书标题</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputTitle">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputAuthor" class="col-sm-2 col-form-label">图书作者</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputAuthor">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputPrice" class="col-sm-2 col-form-label">图书价格</label>
+              <div class="col-sm-10">
+                <input type="number" class="form-control" id="inputPrice">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputStock" class="col-sm-2 col-form-label">图书库存</label>
+              <div class="col-sm-10">
+                <input type="number" class="form-control" id="inputStock">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="inputSales" class="col-sm-2 col-form-label">图书销量</label>
+              <div class="col-sm-10">
+                <input type="number" class="form-control" id="inputSales">
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <label for="inputImgPath" class="col-sm-2 col-form-label">图片地址</label>
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="inputImgPath">
+              </div>
+            </div>
+
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary save-btn">保存图书</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <table class="table table-bordered">
     <thead>
     <tr>
-      <th>Book Title</th>
-      <th>Author</th>
-      <th>Price</th>
-      <th>Sales</th>
-      <th>Stock</th>
-      <th>ImagePath</th>
-      <th>Actions</th>
+      <th>图书名称</th>
+      <th>图书作者</th>
+      <th>图书价格</th>
+      <th>图书销量</th>
+      <th>图书库存</th>
+      <th>图片地址</th>
+      <th>操作</th>
     </tr>
     </thead>
     <tbody id="table-body">
-    <tr>
-      <td class="book-title">The Great Gatsby</td>
-      <td class="author">F. Scott Fitzgerald</td>
-      <td class="price">20</td>
-      <td class="sales">20</td>
-      <td class="stock">20</td>
-      <td class="imgPath">static/img/1.png</td>
-      <td>
-        <span class="edit-btn text-primary mr-2">Edit</span>
-        <span class="delete-btn text-danger">Delete</span>
-      </td>
-    </tr>
-    <tr>
-      <td class="book-title">To Kill a Mockingbird</td>
-      <td class="author">Harper Lee</td>
-      <td class="price">20</td>
-      <td class="sales">20</td>
-      <td class="stock">20</td>
-      <td class="imgPath">static/img/1.png</td>
-      <td>
-        <span class="edit-btn text-primary mr-2">Edit</span>
-        <span class="delete-btn text-danger">Delete</span>
-      </td>
-    </tr>
     </tbody>
   </table>
+  <div
+      class="toast position-absolute align-items-center text-white bg-primary border-0 top-0 start-50 translate-middle-x"
+      role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+        Hello, world! This is a toast message.
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+              aria-label="Close"></button>
+    </div>
+  </div>
 </div>
+
+
 <script src="/static/js/request.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  getAllBooks()
+
+  async function getAllBooks() {
+    let res = await request("/getAllBooks", {}, "post", "fetch")
+
+    if (res.status === 200) {
+      createTbody(res.data)
+    }
+
+    console.log("getAllBooks", res)
+  }
+
+  function createTbody(data) {
+    const tbody = document.querySelector("#table-body")
+    const fragment = document.createDocumentFragment()
+    data.map(item => {
+      let tr = document.createElement("tr")
+      let str = `
+       <td class="book-title">${item.title}</td>
+      <td class="author">${item.author}</td>
+      <td class="price">${item.price}</td>
+      <td class="sales">${item.sales}</td>
+      <td class="stock">${item.stock}</td>
+      <td class="imgPath">${item.imgPath}</td>
+      <td>
+        <span class="edit-btn btn-text text-primary mr-2" data-bs-toggle="modal" onclick="">Edit</span>
+        <span class="delete-btn text-danger" onclick="deleteBook(${item.id})">Delete</span>
+      </td>`
+
+      tr.innerHTML = str
+
+      fragment.appendChild(tr)
+    })
+    tbody.appendChild(fragment)
+  }
+
+
+  document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.edit-btn').forEach(button => {
-      button.addEventListener('click', function() {
-        let row = this.closest('tr');
-        let titleCell = row.querySelector('.book-title');
-        let authorCell = row.querySelector('.author');
-        let priceCell = row.querySelector('.price');
-        let salesCell = row.querySelector('.sales');
-        let stockCell = row.querySelector('.stock');
-        let imgCell = row.querySelector('.imgPath');
-        let isEditing = row.classList.contains('editing');
 
-        if (isEditing) {
-
-          // console.log(titleCell.querySelector('input').value)
-          let book = {
-            title: titleCell.querySelector('input').value,
-            author: authorCell.querySelector('input').value,
-            price: priceCell.querySelector('input').value * 1,
-            sales: salesCell.querySelector('input').value * 1,
-            stock: stockCell.querySelector('input').value * 1,
-            imgPath: imgCell.querySelector('input').value
-          };
-          // console.log("savesave")
-          // console.log("savesave")
-          addBook(book)
-          titleCell.innerHTML = titleCell.querySelector('input').value;
-          authorCell.innerHTML = authorCell.querySelector('input').value;
-          priceCell.innerHTML = priceCell.querySelector('input').value;
-          salesCell.innerHTML = salesCell.querySelector('input').value;
-          stockCell.innerHTML = stockCell.querySelector('input').value;
-          imgCell.innerHTML = imgCell.querySelector('input').value;
-          // let imgCell = row.querySelector('.imgPath');
-
-          // console.log("titleCell.querySelector('input').value;",titleCell.querySelector('input').value)
-          this.textContent = 'Edit';
-        } else {
-          titleCell.innerHTML = `<input type="text" class="form-control bookTitle" value="${titleCell.textContent}">`;
-          authorCell.innerHTML = `<input type="text" class="form-control author" value="${authorCell.textContent}">`;
-          stockCell.innerHTML = `<input type="number" class="form-control stock" value="${stockCell.textContent}">`;
-          salesCell.innerHTML = `<input type="number" class="form-control sales" value="${salesCell.textContent}">`;
-          priceCell.innerHTML = `<input type="number" class="form-control price" value="${priceCell.textContent}">`;
-          imgCell.innerHTML = `<input type="text" class="form-control imgPath" value="${imgCell.textContent}">`;
-          this.textContent = 'Save';
-
-
-        }
-        row.classList.toggle('editing');
-      });
     });
 
     document.querySelectorAll('.delete-btn').forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function () {
         let row = this.closest('tr');
-        row.remove();
+
+        console.log("row", row)
+        // row.remove();
       });
     });
   });
 
-  // const table = document.querySelector(".table")
-  // table.addEventListener("click", event => {
+  // function addClick(id) {
   //
-  //   console.log("event.target", event.target.textContent)
-  //   // if (event.target.in)
-  // })
+  //   console.log("event", id)
+  //   // button.addEventListener('click', function () {
+  //   let row = this.closest('tr');
+  //   let titleCell = row.querySelector('.book-title');
+  //   let authorCell = row.querySelector('.author');
+  //   let priceCell = row.querySelector('.price');
+  //   let salesCell = row.querySelector('.sales');
+  //   let stockCell = row.querySelector('.stock');
+  //   let imgCell = row.querySelector('.imgPath');
+  //   let isEditing = row.classList.contains('editing');
+  //
+  //   if (isEditing) {
+  //
+  //     // console.log(titleCell.querySelector('input').value)
+  //     let book = {
+  //       title: titleCell.querySelector('input').value,
+  //       author: authorCell.querySelector('input').value,
+  //       price: priceCell.querySelector('input').value * 1,
+  //       sales: salesCell.querySelector('input').value * 1,
+  //       stock: stockCell.querySelector('input').value * 1,
+  //       imgPath: imgCell.querySelector('input').value
+  //     };
+  //     // console.log("savesave")
+  //     // console.log("savesave")
+  //     addBook(book)
+  //     titleCell.innerHTML = titleCell.querySelector('input').value;
+  //     authorCell.innerHTML = authorCell.querySelector('input').value;
+  //     priceCell.innerHTML = priceCell.querySelector('input').value;
+  //     salesCell.innerHTML = salesCell.querySelector('input').value;
+  //     stockCell.innerHTML = stockCell.querySelector('input').value;
+  //     imgCell.innerHTML = imgCell.querySelector('input').value;
+  //     // let imgCell = row.querySelector('.imgPath');
+  //
+  //     // console.log("titleCell.querySelector('input').value;",titleCell.querySelector('input').value)
+  //     this.textContent = 'Edit';
+  //   } else {
+  //     titleCell.innerHTML = `<input type="text" class="form-control bookTitle" value="${titleCell.textContent}">`;
+  //     authorCell.innerHTML = `<input type="text" class="form-control author" value="${authorCell.textContent}">`;
+  //     stockCell.innerHTML = `<input type="number" class="form-control stock" value="${stockCell.textContent}">`;
+  //     salesCell.innerHTML = `<input type="number" class="form-control sales" value="${salesCell.textContent}">`;
+  //     priceCell.innerHTML = `<input type="number" class="form-control price" value="${priceCell.textContent}">`;
+  //     imgCell.innerHTML = `<input type="text" class="form-control imgPath" value="${imgCell.textContent}">`;
+  //     this.textContent = 'Save';
+  //
+  //
+  //   }
+  //   row.classList.toggle('editing');
+  //   // });
+  // }
 
-  async function addBook(book){
+  async function addBook(book) {
 
-    console.log("document.querySelector(\".bookTitle\")", book)
-
-
-    console.log("book", book)
+    // console.log("document.querySelector(\".bookTitle\")", book)
+    //
+    // console.log("book", book)
     let res = await request("/addBook", {...book}, "post", "fetch")
 
-    console.log('res', res)
+    // console.log('res', res)
+    if (res.status === 200) {
+      // document.querySelector(".toast").classList.
+      if (document.querySelector(".toast").classList.contains("hide")) {
 
+        document.querySelector(".toast").classList.add("show")
+        setTimeout(() => {
+          document.querySelector(".toast").classList.remove("show")
+        }, 2000)
+      } else {
+        document.querySelector(".toast").classList.add("show")
+        setTimeout(() => {
+          document.querySelector(".toast").classList.remove("show")
+        }, 2000)
+      }
+    }
+
+  }
+
+  modalBtnClick()
+
+  function modalBtnClick() {
+    try {
+      const myModal = new bootstrap.Modal(document.querySelector(".modal"), {
+        keyboard: false
+      })
+      document.querySelector(".modal-btn").addEventListener("click", () => {
+        // document.querySelector(".modal").classList.toggle("show")
+        myModal.show()
+      })
+    } catch {
+      console.log('e', e)
+    }
+  }
+  saveBook()
+  function saveBook(){
+    document.querySelector(".save-btn").addEventListener("click", ()=>{
+      let book = {
+        title: document.querySelector('#inputTitle').value,
+        author: document.querySelector('#inputAuthor').value,
+        price: document.querySelector('#inputPrice').value * 1,
+        sales: document.querySelector('#inputSales').value * 1,
+        stock: document.querySelector('#inputStock').value * 1,
+        imgPath: document.querySelector('#inputImgPath').value
+      };
+
+      // console.log(book)
+
+      addBook(book)
+    })
+  }
+
+  async function deleteBook(id) {
+    let res = await request("/deleteBook", {id}, "post", "fetch")
+    if (res.status === 200) {
+      await getAllBooks()
+    }
   }
 </script>
 </body>
