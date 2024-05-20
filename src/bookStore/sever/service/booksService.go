@@ -21,3 +21,7 @@ func GetBooks() ([]*model.Book, error) {
 func DeleteBook(id int) error {
 	return dao.DeleteBook(id)
 }
+
+func UpdateBook(book *model.Book) error {
+	return dao.UpdateBook(book)
+}

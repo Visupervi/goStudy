@@ -119,3 +119,19 @@ func DeleteBook(id int) error {
 	}
 	return nil
 }
+
+func UpdateBook(b *model.Book) error {
+	db, error := db.ConnectDB()
+	if error != nil {
+		return error
+	}
+	defer db.Close()
+	sqlStr := "update books set title=?,author=?,price=?,sales=?,stock=?,img_path=? where id =?"
+	_, err := db.Exec(sqlStr, b.Title, b.Author, b.Price, b.Sales, b.Stock, b.ImgPath, b.ID)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

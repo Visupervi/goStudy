@@ -48,7 +48,7 @@ func InsertBooks(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 		return
 	}
-	fmt.Println("book==", book)
+	//fmt.Println("book==", book)
 	err = service.InsertBook(&book)
 	if err != nil {
 		str, _ := res.ResponseMsg(w, "", http.StatusServiceUnavailable)
@@ -90,6 +90,29 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 	}
 	//fmt.Println("book==", book)
 	err = service.DeleteBook(book.ID)
+	if err != nil {
+		str, err := res.ResponseMsg(w, "failed", http.StatusServiceUnavailable)
+		if err != nil {
+			fmt.Fprintf(w, "处理失败")
+			return
+		}
+		fmt.Fprintf(w, str)
+		return
+	}
+	str, _ := res.ResponseMsg(w, "success", http.StatusOK)
+	fmt.Fprintf(w, str)
+}
+
+func UpdateBook(w http.ResponseWriter, r *http.Request) {
+	utils.SetCorsHeader(w, r)
+	var book model.Book
+	res := &model.BookStoreResult{}
+	err := json.NewDecoder(r.Body).Decode(&book)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
+	}
+	err = service.UpdateBook(&book)
 	if err != nil {
 		str, err := res.ResponseMsg(w, "failed", http.StatusServiceUnavailable)
 		if err != nil {

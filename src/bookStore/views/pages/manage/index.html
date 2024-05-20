@@ -84,7 +84,6 @@
     </div>
   </div>
 
-
   <table class="table table-bordered">
     <thead>
     <tr>
@@ -117,7 +116,7 @@
 <script src="/static/js/request.js"></script>
 <script>
   getAllBooks()
-
+  let bookId = null;
   async function getAllBooks() {
     let res = await request("/getAllBooks", {}, "post", "fetch")
 
@@ -125,11 +124,12 @@
       createTbody(res.data)
     }
 
-    console.log("getAllBooks", res)
+    // console.log("getAllBooks", res)
   }
 
   function createTbody(data) {
     const tbody = document.querySelector("#table-body")
+    tbody.innerHTML = null
     const fragment = document.createDocumentFragment()
     data.map(item => {
       let tr = document.createElement("tr")
@@ -141,7 +141,7 @@
       <td class="stock">${item.stock}</td>
       <td class="imgPath">${item.imgPath}</td>
       <td>
-        <span class="edit-btn btn-text text-primary mr-2" data-bs-toggle="modal" onclick="">Edit</span>
+        <span class="edit-btn btn-text text-primary mr-2" onclick="editBook(${item.id},'${item.title}','${item.author}',${item.price},${item.sales},${item.stock},'${item.imgPath}')">Edit</span>
         <span class="delete-btn text-danger" onclick="deleteBook(${item.id})">Delete</span>
       </td>`
 
@@ -225,13 +225,13 @@
     // console.log("document.querySelector(\".bookTitle\")", book)
     //
     // console.log("book", book)
-    let res = await request("/addBook", {...book}, "post", "fetch")
+    let url = bookId ? "/updateBook" : "/addBook"
+    let res = await request(url, {...book}, "post", "fetch")
 
     // console.log('res', res)
     if (res.status === 200) {
       // document.querySelector(".toast").classList.
       if (document.querySelector(".toast").classList.contains("hide")) {
-
         document.querySelector(".toast").classList.add("show")
         setTimeout(() => {
           document.querySelector(".toast").classList.remove("show")
@@ -253,9 +253,21 @@
     keyboard: false
   })
 
+  function editBook(id, title, author, price, sales, stock, imgPath) {
+    console.log("item", id, title, author, price, sales, stock, imgPath)
+    // console.log("item", price)
+    myModal.show()
+    bookId = id;
+    document.querySelector('#inputTitle').value = title
+    document.querySelector('#inputAuthor').value = author
+    document.querySelector('#inputPrice').value = price
+    document.querySelector('#inputSales').value = sales
+    document.querySelector('#inputStock').value = stock
+    document.querySelector('#inputImgPath').value = imgPath
+  }
+
   function modalBtnClick() {
     try {
-
       document.querySelector(".modal-btn").addEventListener("click", () => {
         // document.querySelector(".modal").classList.toggle("show")
         myModal.show()
@@ -268,23 +280,42 @@
   saveBook()
 
   function saveBook() {
-    document.querySelector(".save-btn").addEventListener("click", () => {
-      let book = {
+    document.querySelector(".save-btn").addEventListener("click", async () => {
+      let book;
+
+      book = bookId ? {
         title: document.querySelector('#inputTitle').value,
         author: document.querySelector('#inputAuthor').value,
         price: document.querySelector('#inputPrice').value * 1,
         sales: document.querySelector('#inputSales').value * 1,
         stock: document.querySelector('#inputStock').value * 1,
-        imgPath: document.querySelector('#inputImgPath').value
+        imgPath: document.querySelector('#inputImgPath').value,
+        id: bookId
+      } : {
+        title: document.querySelector('#inputTitle').value,
+        author: document.querySelector('#inputAuthor').value,
+        price: document.querySelector('#inputPrice').value * 1,
+        sales: document.querySelector('#inputSales').value * 1,
+        stock: document.querySelector('#inputStock').value * 1,
+        imgPath: document.querySelector('#inputImgPath').value,
       };
 
       // console.log(book)
 
-      let res = addBook(book)
+      let res = await addBook(book)
+
+      // if (bookId) {
+      //   = await addBook(book)
+      // }
+
+
+      // console.log("res", res)
 
       if (res.status === 200) {
+        bookId = null
         myModal.hide()
-        getAllBooks()
+        await getAllBooks()
+
       }
     })
   }
