@@ -3,6 +3,7 @@ package dao
 import (
 	"bookStore/sever/model"
 	"fmt"
+	"github.com/google/uuid"
 	"testing"
 )
 
@@ -17,7 +18,10 @@ func TestUser(t *testing.T) {
 	//t.Run("根据用户名检查用户", testGetUserByName)
 	//t.Run("查询所有图书", testGetBooks)
 	//t.Run("分页查询图书", testGetBooksByPage)
-	t.Run("插入图书测试", testInsertBook)
+	//t.Run("插入图书测试", testInsertBook)
+	t.Run("插入Session测试", testAddSession)
+	//t.Run("删除Session测试", testDeleteSession)
+	t.Run("查找Session测试", testGetSessionById)
 }
 
 func testAddUser(t *testing.T) {
@@ -71,4 +75,26 @@ func testInsertBook(t *testing.T) {
 	}
 
 	InsertBook(book)
+}
+
+func testAddSession(t *testing.T) {
+	uuidValue := uuid.New()
+	sess := &model.Session{
+		SessionId: uuidValue.String(),
+		UserName:  "admin",
+		UserId:    1,
+	}
+	AddSession(sess)
+}
+
+func testDeleteSession(t *testing.T) {
+	sess := "e851e923-0820-41d4-bc46-dd5a0a9cf3e0"
+
+	DeleteSession(sess)
+}
+
+func testGetSessionById(t *testing.T) {
+	sess := "8d8f47dd-0ac0-49b1-8428-9ccee45bdcbd"
+
+	GetSessionById(sess)
 }

@@ -27,7 +27,7 @@ async function request(url = "", data = {}, type = "POST", method = "fetch") {
         'Content-Type': 'application/json'
       },
       mode: "cors",
-      // cache: "force-cache"
+      cache: "force-cache"
     };
 
     // let data = {"1": 2, "3": 4};

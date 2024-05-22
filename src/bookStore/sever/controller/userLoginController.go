@@ -33,6 +33,16 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
+
+	cookie := http.Cookie{
+		Name:     "user",
+		Value:    user.UserName,
+		MaxAge:   10000,
+		HttpOnly: true,
+	}
+
+	//w.Header().Set("Set-Cookie", cookie.String())
+	http.SetCookie(w, &cookie)
 	str, err := res.ResponseMsg(w, u, http.StatusOK)
 	if err != nil {
 		fmt.Fprintf(w, "处理失败")
