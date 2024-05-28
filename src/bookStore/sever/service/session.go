@@ -13,3 +13,6 @@ func AddSession(sess *model.Session) (res sql.Result, err error) {
 func DeleteSession(sessionId string) error {
 	return dao.DeleteSession(sessionId)
 }
+func GetSessionById(sessId string) (*model.Session, error) {
+	return dao.GetSessionById(sessId)
+}

@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"bookStore/sever/db"
 	"bookStore/sever/model"
 	"fmt"
 	"github.com/google/uuid"
@@ -19,9 +20,13 @@ func TestUser(t *testing.T) {
 	//t.Run("查询所有图书", testGetBooks)
 	//t.Run("分页查询图书", testGetBooksByPage)
 	//t.Run("插入图书测试", testInsertBook)
-	t.Run("插入Session测试", testAddSession)
+	//t.Run("插入Session测试", testAddSession)
 	//t.Run("删除Session测试", testDeleteSession)
-	t.Run("查找Session测试", testGetSessionById)
+	//t.Run("查找Session测试", testGetSessionById)
+	//t.Run("购物车测试", testCartAdd)
+	//t.Run("购物车项测试", testAddCartsItem)
+	//t.Run("测试获取购物车项", testGetCartItem)
+	t.Run("购物车获取测试", testGetCartItems)
 }
 
 func testAddUser(t *testing.T) {
@@ -88,7 +93,7 @@ func testAddSession(t *testing.T) {
 }
 
 func testDeleteSession(t *testing.T) {
-	sess := "e851e923-0820-41d4-bc46-dd5a0a9cf3e0"
+	sess := "45d1b156-e635-4b5c-aaa5-fcf6d56fd6d8"
 
 	DeleteSession(sess)
 }
@@ -97,4 +102,79 @@ func testGetSessionById(t *testing.T) {
 	sess := "8d8f47dd-0ac0-49b1-8428-9ccee45bdcbd"
 
 	GetSessionById(sess)
+}
+
+// 5 | 苏东坡传                  | 林语堂              |    19.00 |     100 |     100 | static/img/苏东坡传.jpg
+func testCartAdd(t *testing.T) {
+
+	var items []*model.CartItem
+
+	book := &model.Book{
+		ID:    5,
+		Price: 19.00,
+	}
+
+	book1 := &model.Book{
+		ID:    6,
+		Price: 29.00,
+	}
+	uuidValue := uuid.New()
+	item := &model.CartItem{
+		CartId: uuidValue.String(),
+		//Amount: 12,
+		Count: 12,
+		Book:  book,
+	}
+	items = append(items, item)
+	item1 := &model.CartItem{
+		CartId: uuidValue.String(),
+		//Amount: 12,
+		Count: 10,
+		Book:  book1,
+	}
+	items = append(items, item1)
+
+	//item := append()
+	cart := &model.Cart{
+		CartId: uuidValue.String(),
+		//TotalAmount: 128.11,
+		//TotalCount: 22,
+		UserId: 1,
+		Items:  items,
+	}
+	AddCart(cart)
+}
+
+func testAddCartsItem(t *testing.T) {
+	db, _ := db.ConnectDB()
+	//if error != nil {
+	//	//return nil
+	//}
+	defer db.Close()
+	//uuidValue := uuid.New()
+	book := &model.Book{
+		ID:    5,
+		Price: 19.00,
+	}
+	item := &model.CartItem{
+		CartId: "5b4eaa8f-2661-464c-9b55-af5ab3ce70cf",
+		Count:  10,
+		//Amount: 100,
+		Book: book,
+	}
+
+	AddCartsItem(item)
+}
+
+func testGetCartItem(t *testing.T) {
+	item, _ := GetCartItem(5)
+
+	fmt.Println("item", item)
+}
+
+func testGetCartItems(t *testing.T) {
+	items, _ := GetCartItems("72a40d8a-a9a0-43b0-9db8-4d8d97d77343")
+
+	fmt.Println("items", items)
+
 }

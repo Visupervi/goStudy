@@ -6,6 +6,7 @@ import (
 	"bookStore/sever/utils"
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -34,14 +35,35 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := http.Cookie{
-		Name:     "user",
-		Value:    user.UserName,
-		MaxAge:   10000,
-		HttpOnly: true,
-	}
+	//cookie := http.Cookie{
+	//	Name:     "user",
+	//	Value:    user.UserName,
+	//	MaxAge:   10000,
+	//	HttpOnly: true,
+	//}
 
 	//w.Header().Set("Set-Cookie", cookie.String())
+	//http.SetCookie(w, &cookie)
+	uuidValue := uuid.New()
+	sess := &model.Session{
+		SessionId: uuidValue.String(),
+		UserName:  u.UserName,
+		UserId:    u.ID,
+	}
+	//cookie := http.Cookie{
+	//	Name:     "user",
+	//	Value:    user.UserName,
+	//	MaxAge:   10000,
+	//	HttpOnly: true,
+	//}
+	service.AddSession(sess)
+
+	cookie := http.Cookie{
+		Name:     "user",
+		Value:    uuidValue.String(),
+		MaxAge:   100000,
+		HttpOnly: true,
+	}
 	http.SetCookie(w, &cookie)
 	str, err := res.ResponseMsg(w, u, http.StatusOK)
 	if err != nil {

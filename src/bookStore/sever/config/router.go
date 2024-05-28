@@ -9,7 +9,7 @@ func RouterHandle() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("src/bookStore/views/static"))))
 	http.Handle("/pages/", http.StripPrefix("/pages/", http.FileServer(http.Dir("src/bookStore/views/pages"))))
 	//http.Handle("/books/", http.StripPrefix("/books/", http.FileServer(http.Dir("src/bookStore/views/pages"))))
-	http.HandleFunc("/setCookies", controller.SetCookie)
+	//http.HandleFunc("/setCookies", controller.SetCookie)
 	http.HandleFunc("/index", controller.ServerHandler)
 	http.HandleFunc("/login", controller.Login)
 	http.HandleFunc("/registry", controller.Registry)
