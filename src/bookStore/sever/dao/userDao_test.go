@@ -27,6 +27,7 @@ func TestUser(t *testing.T) {
 	//t.Run("购物车项测试", testAddCartsItem)
 	//t.Run("测试获取购物车项", testGetCartItem)
 	t.Run("购物车获取测试", testGetCartItems)
+	//t.Run("购物车获取测试", testGetCartByUid)
 }
 
 func testAddUser(t *testing.T) {
@@ -173,8 +174,16 @@ func testGetCartItem(t *testing.T) {
 }
 
 func testGetCartItems(t *testing.T) {
-	items, _ := GetCartItems("72a40d8a-a9a0-43b0-9db8-4d8d97d77343")
+	items, _ := GetCartItems("bd2d63fa-29fb-496a-8e6c-84e6b590149a")
 
-	fmt.Println("items", items)
+	for _, v := range items {
+		fmt.Println("items====v", v.Book)
+	}
 
+}
+
+func testGetCartByUid(t *testing.T) {
+	cart, _ := GetCartByUid(1)
+
+	fmt.Println("cart", cart)
 }

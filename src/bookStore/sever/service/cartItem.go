@@ -12,3 +12,11 @@ func AddCartItem(item *model.CartItem) error {
 func DeleteCartItem(id int64) error {
 	return dao.DeleteCartItem(id)
 }
+
+func GetCartItem(bookId int) (*model.CartItem, error) {
+	return dao.GetCartItem(bookId)
+}
+
+func GetCartItems(cardId string) ([]*model.CartItem, error) {
+	return dao.GetCartItems(cardId)
+}

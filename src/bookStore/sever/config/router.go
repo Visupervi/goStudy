@@ -18,5 +18,6 @@ func RouterHandle() {
 	http.HandleFunc("/getAllBooks", controller.GetBooks)
 	http.HandleFunc("/deleteBook", controller.DeleteBook)
 	http.HandleFunc("/updateBook", controller.UpdateBook)
+	http.HandleFunc("/getCart", controller.GetCart)
 	http.ListenAndServe(":9998", nil)
 }

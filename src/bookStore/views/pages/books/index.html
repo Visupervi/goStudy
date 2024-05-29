@@ -69,11 +69,18 @@
 <div class="container mt-5">
   <div>
     <h1 class="mb-4">图书商城</h1>
-    <a href="/pages/user/index.html">首页</a>
-    <a href="/pages/manage/index.html">去管理图书</a>
+    <div style="display: flex;flex-direction: row; justify-content: end">
+      <span>欢迎高贵的<span class="username"></span>贵客光临</span>
+      <span style="width: 10px"></span>
+      <a href="/pages/user/index.html">首页</a>
+      <span style="width: 10px"></span>
+      <a href="/pages/manage/index.html">去管理图书</a>
+      <span style="width: 10px"></span>
+      <a href="/pages/cart/index.html">购物车</a>
+    </div>
   </div>
-  <div>
-    购物车中有{{.count}}件商品
+  <div class="totalCount" style="display: flex; justify-content: end; padding-bottom: 10px; padding-top: 10px;">
+
   </div>
   <div class="row bookWrap">
   </div>
@@ -91,7 +98,7 @@
 <script src="/static/js/request.js"></script>
 <script>
   // /getBooks
-  getBooks(1,10)
+  getBooks(1, 10)
 
   async function getBooks(page, limit) {
     let res = await request("/getBooks", {
@@ -132,7 +139,6 @@
     bookWrap.appendChild(fragment)
   }
 
-
   function createPagination(total) {
     const pagination = document.querySelector(".pagination")
     pagination.innerHTML = ""
@@ -154,9 +160,9 @@
     pagination.appendChild(fragment)
   }
 
-  function PaginationClick(){
+  function PaginationClick() {
     const pagination = document.querySelector(".pagination")
-    pagination.addEventListener("click", (event)=>{
+    pagination.addEventListener("click", (event) => {
       event.preventDefault()
       // console.log("event", event.target.innerHTML)
 
@@ -165,6 +171,34 @@
   }
 
   PaginationClick();
+
+  function getUserName(){
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    // console.log("user", JSON.parse(user));
+    document.querySelector(".username").innerHTML = user.userName
+  }
+  getUserName();
+
+  async function getCartTotal(){
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    const totalCount = document.querySelector(".totalCount")
+    let res = await request("/getCart", {
+      ...user
+    }, "post", "fetch")
+    if (res.status === 200) {
+      if (res.data.items.length > 0) {
+        // createBookList(res.data.books)
+        // createPagination(res.data.totalPages)
+        totalCount.innerHTML = ` 购物车中有${res.data.items.length}件商品`
+      } else {
+        totalCount.innerHTML = ` 购物车中有0件商品`
+      }
+
+      console.log('res', res)
+    }
+  }
+  getCartTotal()
+  // getCartTotal()
 </script>
 </body>
 </html>

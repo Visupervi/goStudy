@@ -21,14 +21,14 @@ func AddCart(c *model.Cart) error {
 	sqlStr := "insert into carts(id ,total_count,total_amount,user_id) values(?,?,?,?)"
 	_, err := db.Exec(sqlStr, c.CartId, c.GetCount(), c.GetAmount(), c.UserId)
 
-	//fmt.Println("res", res)
+	//fmt.Println("eee", err)
 	if err != nil {
 		return err
 	}
 	cartItems := c.Items
 	// 将购物项添加到数据库中
 	for _, item := range cartItems {
-		//fmt.Println("items", item)
+		//fmt.Println("items", item.Book)
 		AddCartsItem(item)
 	}
 	return nil
@@ -53,3 +53,32 @@ func AddCart(c *model.Cart) error {
 //
 //	return item, nil
 //}
+
+func GetCartByUid(uId int) (*model.Cart, error) {
+	db, error := db.ConnectDB()
+	if error != nil {
+		return nil, error
+	}
+	defer db.Close()
+	str := "select id,total_count,total_amount,user_id from carts where user_id = ?"
+
+	row := db.QueryRow(str, uId)
+
+	cart := &model.Cart{}
+	//id | count | amount | book_id | cart_id
+	error = row.Scan(&cart.CartId, &cart.TotalCount, &cart.TotalAmount, &cart.UserId)
+	//fmt.Println("error", error)
+	if error != nil {
+		return nil, error
+	}
+	items, err := GetCartItems(cart.CartId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	cart.Items = items
+
+	return cart, nil
+
+}

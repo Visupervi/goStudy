@@ -3,7 +3,6 @@ package dao
 import (
 	"bookStore/sever/db"
 	"bookStore/sever/model"
-	"fmt"
 )
 
 func AddCartsItem(item *model.CartItem) error {
@@ -18,8 +17,7 @@ func AddCartsItem(item *model.CartItem) error {
 	//fmt.Println(item.Book.ID)
 	//fmt.Println(item.CartId)
 	_, err := db.Exec(sqlStr, item.Count, item.GetAmount(), item.Book.ID, item.CartId)
-
-	fmt.Println("res", err)
+	//fmt.Println("res", err)
 	if err != nil {
 		return err
 	}
@@ -52,14 +50,16 @@ func GetCartItem(bookId int) (*model.CartItem, error) {
 	row := db.QueryRow(str, bookId)
 
 	item := &model.CartItem{}
-
+	//var bookId int
 	//id | count | amount | book_id | cart_id
 	error = row.Scan(&item.Id, &item.Count, &item.Amount, &item.CartId)
-	fmt.Println("error", error)
+	//fmt.Println("error", error)
 	if error != nil {
 		return nil, error
 	}
 
+	book, _ := GetBookById(bookId)
+	item.Book = book
 	return item, nil
 
 }
@@ -70,7 +70,7 @@ func GetCartItems(cId string) ([]*model.CartItem, error) {
 		return nil, error
 	}
 	defer db.Close()
-	str := "select id,count,amount,cart_id from cart_items where cart_id = ?"
+	str := "select id,count,amount,book_id,cart_id from cart_items where cart_id = ?"
 
 	rows, err := db.Query(str, cId)
 
@@ -81,13 +81,16 @@ func GetCartItems(cId string) ([]*model.CartItem, error) {
 	for rows.Next() {
 		//s
 
+		var bookId int
 		item := &model.CartItem{}
-		error = rows.Scan(&item.Id, &item.Amount, &item.Amount, &item.CartId)
+		error = rows.Scan(&item.Id, &item.Count, &item.Amount, &bookId, &item.CartId)
 
 		if error != nil {
 			return nil, error
 		}
-
+		//fmt.Println("bookId", bookId)
+		book, _ := GetBookById(bookId)
+		item.Book = book
 		items = append(items, item)
 	}
 	return items, nil

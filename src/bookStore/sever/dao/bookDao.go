@@ -135,3 +135,22 @@ func UpdateBook(b *model.Book) error {
 
 	return nil
 }
+
+func GetBookById(id int) (*model.Book, error) {
+	db, error := db.ConnectDB()
+	if error != nil {
+		return nil, error
+	}
+	defer db.Close()
+
+	sqlStr := "select id,title,author,price,sales,stock,img_path from books where id = ?"
+	book := &model.Book{}
+	row := db.QueryRow(sqlStr, id)
+	err := row.Scan(&book.ID, &book.Title, &book.Author, &book.Price, &book.Sales, &book.Stock, &book.ImgPath)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return book, nil
+}
