@@ -4,6 +4,10 @@ go如何拉取第三方的包?
 
 ```shell
 go get github.com/garyburd/redigo/redis
+
+go get github.com/google/uuid   
+
+go get -u github.com/go-sql-driver/mysql
 ```
 ps: 要去项目的gopath下面下载
 
