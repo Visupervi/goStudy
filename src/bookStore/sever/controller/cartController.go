@@ -21,15 +21,6 @@ func GetCart(w http.ResponseWriter, r *http.Request) {
 	}
 	//fmt.Println("book==", book)
 	cart, _ := service.GetCartByUserId(user.ID)
-	//if err != nil {
-	//	str, err := res.ResponseMsg(w, "failed", http.StatusServiceUnavailable)
-	//	if err != nil {
-	//		fmt.Fprintf(w, "处理失败")
-	//		return
-	//	}
-	//	fmt.Fprintf(w, str)
-	//	return
-	//}
 	str, _ := res.ResponseMsg(w, cart, http.StatusOK)
 	fmt.Fprintf(w, str)
 }
@@ -49,7 +40,6 @@ func AddCart(w http.ResponseWriter, r *http.Request) {
 	res := &model.BookStoreResult{}
 	// 根据请求body创建一个json解析器实例
 	decoder := json.NewDecoder(r.Body)
-
 	// 用于存放参数key=value数据
 	var params map[string]string
 
@@ -64,14 +54,12 @@ func AddCart(w http.ResponseWriter, r *http.Request) {
 	if cart != nil {
 		item, _ := service.GetCartItemByBookIdAndCartId(cart.CartId, utils.String2Int(params["bookId"]))
 		if item != nil {
-			// TODO 更新item, 更新carts
 			err = utils.UpdateCartAndItem(item, cart)
 			if err != nil && err != sql.ErrNoRows {
 				http.Error(w, err.Error(), http.StatusServiceUnavailable)
 				return
 			}
 		} else {
-			// TODO 添加到cart_items
 			fmt.Println("come here")
 			err = utils.UpdateCartAddItem(params, cart)
 			if err != nil && err != sql.ErrNoRows {
@@ -82,7 +70,6 @@ func AddCart(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-		// TODO 新建购物车
 		err = utils.CreateNewCart(params)
 		if err != nil && err != sql.ErrNoRows {
 			http.Error(w, err.Error(), http.StatusServiceUnavailable)
