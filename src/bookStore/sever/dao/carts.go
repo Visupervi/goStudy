@@ -3,6 +3,7 @@ package dao
 import (
 	"bookStore/sever/db"
 	"bookStore/sever/model"
+	"fmt"
 )
 
 //TotalCount  int64       `json:"totalCount"`
@@ -60,19 +61,20 @@ func GetCartByUid(uId int) (*model.Cart, error) {
 		return nil, error
 	}
 	defer db.Close()
-	str := "select id,total_count,total_amount,user_id from carts where user_id = ?"
+	str := "select id,total_count,total_amount, user_id from carts where user_id = ?"
 
 	row := db.QueryRow(str, uId)
 
 	cart := &model.Cart{}
 	//id | count | amount | book_id | cart_id
 	error = row.Scan(&cart.CartId, &cart.TotalCount, &cart.TotalAmount, &cart.UserId)
-	//fmt.Println("error", error)
+
 	if error != nil {
+		//fmt.Println("error", error)
 		return nil, error
 	}
 	items, err := GetCartItems(cart.CartId)
-
+	//fmt.Println("error", err)
 	if err != nil {
 		return nil, err
 	}
@@ -81,4 +83,23 @@ func GetCartByUid(uId int) (*model.Cart, error) {
 
 	return cart, nil
 
+}
+
+// UpdateCart 更新购物车
+func UpdateCart(c *model.Cart) error {
+	db, error := db.ConnectDB()
+	if error != nil {
+		return error
+	}
+	defer db.Close()
+	//id | count | amount | book_id | cart_id
+	sqlStr := "update carts set total_count=?,total_amount=? where id =?"
+	_, err := db.Exec(sqlStr, c.GetCount(), c.GetAmount(), c.CartId)
+
+	if err != nil {
+		fmt.Println("err", err.Error())
+		return err
+	}
+
+	return nil
 }

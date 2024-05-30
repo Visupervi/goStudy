@@ -128,7 +128,7 @@
           <h5 class="card-title">${item.title}</h5>
           <p class="card-text">${item.author}</p>
           <p class="card-text">¥ ${item.price}</p>
-          <button class="btn btn-primary">购买</button>
+          <button class="btn btn-primary" onclick="addCart(${item.id}, ${item.price})">购买</button>
         </div>
       </div>
     `
@@ -144,19 +144,12 @@
     pagination.innerHTML = ""
     const fragment = document.createDocumentFragment()
     let pre = document.createElement("li")
-    // pre.className = "page-item"
-    // pre.innerHTML = `<a className="page-link" href="javascript:;">上一页</a>`
-    // fragment.appendChild(pre)
     for (let i = 0; i < total; i++) {
       let li = document.createElement("li")
       li.className = "page-item"
       li.innerHTML = `<button className="page-link btn btn-primary" href="javascript:;">${i + 1}</button>`
       fragment.appendChild(li)
     }
-    // let next = document.createElement("li")
-    // next.className = "page-item"
-    // next.innerHTML = `<a className="page-link" href="javascript:;">下一页</a>`
-    // fragment.appendChild(next)
     pagination.appendChild(fragment)
   }
 
@@ -165,28 +158,28 @@
     pagination.addEventListener("click", (event) => {
       event.preventDefault()
       // console.log("event", event.target.innerHTML)
-
       getBooks(event.target.innerHTML * 1, 10)
     })
   }
 
   PaginationClick();
 
-  function getUserName(){
+  function getUserName() {
     let user = JSON.parse(sessionStorage.getItem("user"));
     // console.log("user", JSON.parse(user));
     document.querySelector(".username").innerHTML = user.userName
   }
+
   getUserName();
 
-  async function getCartTotal(){
+  async function getCartTotal() {
     let user = JSON.parse(sessionStorage.getItem("user"));
     const totalCount = document.querySelector(".totalCount")
     let res = await request("/getCart", {
       ...user
     }, "post", "fetch")
     if (res.status === 200) {
-      if (res.data.items.length > 0) {
+      if (!!res.data && res.data.items.length > 0) {
         // createBookList(res.data.books)
         // createPagination(res.data.totalPages)
         totalCount.innerHTML = ` 购物车中有${res.data.items.length}件商品`
@@ -194,11 +187,28 @@
         totalCount.innerHTML = ` 购物车中有0件商品`
       }
 
-      console.log('res', res)
+      // console.log('res', res)
     }
   }
+
   getCartTotal()
+
   // getCartTotal()
+
+  async function addCart(id, price) {
+    // console.log('12121212121212', price)
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    let res = await request("/addCart", {
+      userId: user.id + '',
+      bookId: id + '',
+      price: price + ''
+    }, "post", "fetch")
+
+    if (res.status === 200) {
+      await getCartTotal()
+    }
+
+  }
 </script>
 </body>
 </html>
