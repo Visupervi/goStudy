@@ -30,8 +30,18 @@ func String2Int(str string) int {
 	if err != nil {
 		return 0
 	}
-
 	return int
+}
+
+// String2Int64 string转int64
+func String2Int64(str string) int64 {
+
+	int64, err := strconv.ParseInt(str, 10, 64)
+
+	if err != nil {
+		return 0
+	}
+	return int64
 }
 
 // String2Float64 string 转 float64
@@ -49,7 +59,7 @@ func UpdateCartAddItem(params map[string]string, cart *model.Cart) error {
 		ID:    String2Int(params["bookId"]),
 		Price: String2Float64(params["price"]),
 	}
-	fmt.Println("cart", cart)
+	//fmt.Println("cart", cart)
 	cartItem := &model.CartItem{
 		CartId: cart.CartId,
 		Count:  1,
@@ -72,7 +82,7 @@ func UpdateCartAddItem(params map[string]string, cart *model.Cart) error {
 }
 
 func UpdateCartAndItem(item *model.CartItem, cart *model.Cart) error {
-	// TODO 更新item, 更新carts
+	// 更新item, 更新carts
 	item.Count += 1
 	err := service.UpdateCartItem(item)
 	if err != nil {

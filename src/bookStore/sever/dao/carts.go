@@ -66,9 +66,7 @@ func GetCartByUid(uId int) (*model.Cart, error) {
 	row := db.QueryRow(str, uId)
 
 	cart := &model.Cart{}
-	//id | count | amount | book_id | cart_id
 	error = row.Scan(&cart.CartId, &cart.TotalCount, &cart.TotalAmount, &cart.UserId)
-
 	if error != nil {
 		//fmt.Println("error", error)
 		return nil, error
@@ -82,7 +80,6 @@ func GetCartByUid(uId int) (*model.Cart, error) {
 	cart.Items = items
 
 	return cart, nil
-
 }
 
 // UpdateCart 更新购物车
@@ -101,5 +98,23 @@ func UpdateCart(c *model.Cart) error {
 		return err
 	}
 
+	return nil
+}
+
+func DeleteCart(uId int, cartId string) error {
+	db, error := db.ConnectDB()
+	if error != nil {
+		return error
+	}
+	defer db.Close()
+	err := DeleteCartItem(cartId)
+	if err != nil {
+		return err
+	}
+	sqlStr := "delete from carts where user_id = ? and id =?"
+	_, err = db.Exec(sqlStr, uId, cartId)
+	if err != nil {
+		return err
+	}
 	return nil
 }

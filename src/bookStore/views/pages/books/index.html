@@ -66,7 +66,19 @@
 
 </head>
 <body>
+
 <div class="container mt-5">
+  <div
+      class="toast position-absolute align-items-center text-white bg-info border-0 top-0 start-50 translate-middle-x"
+      role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body">
+
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+              aria-label="Close"></button>
+    </div>
+  </div>
   <div>
     <h1 class="mb-4">图书商城</h1>
     <div style="display: flex;flex-direction: row; justify-content: end">
@@ -128,7 +140,7 @@
           <h5 class="card-title">${item.title}</h5>
           <p class="card-text">${item.author}</p>
           <p class="card-text">¥ ${item.price}</p>
-          <button class="btn btn-primary" onclick="addCart(${item.id}, ${item.price})">购买</button>
+          <button class="btn btn-primary" onclick="addCart(${item.id}, ${item.price}, '${item.title}')">购买</button>
         </div>
       </div>
     `
@@ -167,7 +179,7 @@
   function getUserName() {
     let user = JSON.parse(sessionStorage.getItem("user"));
     // console.log("user", JSON.parse(user));
-    document.querySelector(".username").innerHTML = user.userName
+    document.querySelector(".username").innerHTML = `<span style="color: orangered; font-size: 20px; font-weight: bold">${user.userName}</span>`
   }
 
   getUserName();
@@ -195,7 +207,7 @@
 
   // getCartTotal()
 
-  async function addCart(id, price) {
+  async function addCart(id, price, title) {
     // console.log('12121212121212', price)
     let user = JSON.parse(sessionStorage.getItem("user"));
     let res = await request("/addCart", {
@@ -205,6 +217,19 @@
     }, "post", "fetch")
 
     if (res.status === 200) {
+      if (document.querySelector(".toast").classList.contains("hide")) {
+        document.querySelector(".toast").classList.add("show")
+        document.querySelector(".toast-body").innerHTML = `刚刚将<span style="color:indianred">${title}</span>加入购物车`
+        setTimeout(() => {
+          document.querySelector(".toast").classList.remove("show")
+        }, 2000)
+      } else {
+        document.querySelector(".toast").classList.add("show")
+        document.querySelector(".toast-body").innerHTML = `刚刚将<span style="color:indianred">${title}</span>加入购物车`
+        setTimeout(() => {
+          document.querySelector(".toast").classList.remove("show")
+        }, 2000)
+      }
       await getCartTotal()
     }
 

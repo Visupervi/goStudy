@@ -3,7 +3,6 @@ package dao
 import (
 	"bookStore/sever/db"
 	"bookStore/sever/model"
-	"fmt"
 )
 
 func AddCartsItem(item *model.CartItem) error {
@@ -13,19 +12,34 @@ func AddCartsItem(item *model.CartItem) error {
 	}
 	defer db.Close()
 	sqlStr := "insert into cart_items(count,amount,book_id,cart_id) values(?,?,?,?)"
-	fmt.Println(item.Count)
-	fmt.Println(item.GetAmount())
-	fmt.Println(item.Book.ID)
-	fmt.Println(item.CartId)
+	//fmt.Println(item.Count)
+	//fmt.Println(item.GetAmount())
+	//fmt.Println(item.Book.ID)
+	//fmt.Println(item.CartId)
 	_, err := db.Exec(sqlStr, item.Count, item.GetAmount(), item.Book.ID, item.CartId)
-	fmt.Println("res", err)
+	//fmt.Println("res", err)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func DeleteCartItem(id int64) error {
+func DeleteCartItem(cartId string) error {
+	db, error := db.ConnectDB()
+	if error != nil {
+		return error
+	}
+	defer db.Close()
+
+	sqlStr := "delete from cart_items where cart_id = ?"
+	_, err := db.Exec(sqlStr, cartId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteCartItemById(id string) error {
 	db, error := db.ConnectDB()
 	if error != nil {
 		return error

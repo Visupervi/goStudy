@@ -16,3 +16,7 @@ func GetCartByUserId(userId int) (*model.Cart, error) {
 func UpdateCart(cart *model.Cart) error {
 	return dao.UpdateCart(cart)
 }
+
+func ClearCart(userId int, cartId string) error {
+	return dao.DeleteCart(userId, cartId)
+}
