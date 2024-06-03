@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>订单管理</title>
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+  <script src="/static/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <h1 class="my-4">订单管理</h1>
+
+  <div style="display: flex;flex-direction: row; justify-content: end">
+<!--    <span>欢迎高贵的<span class="username"></span>贵客光临</span>-->
+    <span style="width: 10px"></span>
+    <a href="/pages/user/index.html">首页</a>
+    <span style="width: 10px"></span>
+    <a href="/pages/manage/index.html">去管理图书</a>
+    <span style="width: 10px"></span>
+<!--    <a href="/pages/order/index.html">去订单管理</a>-->
+    <span style="width: 10px"></span>
+    <a href="/pages/cart/index.html">购物车</a>
+  </div>
+
+  <!-- 表单: 添加新订单 -->
+<!--  <div class="card mb-4">-->
+<!--    <div class="card-header">-->
+<!--      添加新订单-->
+<!--    </div>-->
+<!--    <div class="card-body">-->
+<!--      <form id="addOrderForm">-->
+<!--        <div class="form-row">-->
+<!--          <div class="form-group col-md-4">-->
+<!--            <label for="orderNumber">订单号</label>-->
+<!--            <input type="text" class="form-control" id="orderNumber" placeholder="订单号" required>-->
+<!--          </div>-->
+<!--          <div class="form-group col-md-4">-->
+<!--            <label for="customerName">客户姓名</label>-->
+<!--            <input type="text" class="form-control" id="customerName" placeholder="客户姓名" required>-->
+<!--          </div>-->
+<!--          <div class="form-group col-md-4">-->
+<!--            <label for="orderDate">订单日期</label>-->
+<!--            <input type="date" class="form-control" id="orderDate" required>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <button type="submit" class="btn btn-primary">添加订单</button>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <!-- 表格: 显示订单列表 -->
+  <div class="card">
+    <div class="card-header">
+      订单列表
+    </div>
+    <div class="card-body">
+      <table class="table table-striped" id="ordersTable">
+        <thead>
+        <tr>
+          <th>订单号</th>
+          <th>订单日期</th>
+          <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+        <!-- 动态生成订单行 -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+<script src="/static/js/request.js"></script>
+<script>
+  // 示例数据
+  const orders = [
+    { orderNumber: '001', customerName: '张三', orderDate: '2023-06-01' },
+    { orderNumber: '002', customerName: '李四', orderDate: '2023-06-02' }
+  ];
+
+  // 加载订单列表
+  async function loadOrders() {
+    const tableBody = document.querySelector('#ordersTable tbody');
+    tableBody.innerHTML = '';
+
+    let res = await request("/getOrderList", {}, "post", "fetch")
+    res.data.forEach((order, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+                    <td>${order.id}</td>
+                    <td>${order.createTime}</td>
+                    <td>
+                        <button class="btn btn-info btn-sm" onclick="editOrder(${index})">编辑</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteOrder(${index})">删除</button>
+                    </td>
+                `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  // // 添加新订单
+  // document.getElementById('addOrderForm').addEventListener('submit', function(event) {
+  //   event.preventDefault();
+  //   const orderNumber = document.getElementById('orderNumber').value;
+  //   const customerName = document.getElementById('customerName').value;
+  //   const orderDate = document.getElementById('orderDate').value;
+  //   orders.push({ orderNumber, customerName, orderDate });
+  //   loadOrders();
+  //   this.reset();
+  // });
+
+  // 编辑订单（示例，未实现实际功能）
+  function editOrder(index) {
+    alert('编辑功能暂未实现');
+  }
+
+  // 删除订单
+  function deleteOrder(index) {
+    orders.splice(index, 1);
+    loadOrders();
+  }
+
+  // 初始加载订单列表
+  loadOrders();
+</script>
+</body>
+</html>

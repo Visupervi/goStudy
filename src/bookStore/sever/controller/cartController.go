@@ -132,7 +132,6 @@ func DeleteCartItemById(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	cookie, _ := r.Cookie("user")
 	if cookie != nil {
 		cookieValue := cookie.Value
@@ -152,13 +151,11 @@ func DeleteCartItemById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//cart, _ := service.GetCartByUserId(utils.String2Int(params["userId"]))
-
 	str, _ := res.ResponseMsg(w, "success", http.StatusOK)
 	fmt.Fprintf(w, str)
 }
 
-// 更新购物项
-
+// UpdateCartItemById 更新购物项
 func UpdateCartItemById(w http.ResponseWriter, r *http.Request) {
 	utils.SetCorsHeader(w, r)
 	res := &model.BookStoreResult{}

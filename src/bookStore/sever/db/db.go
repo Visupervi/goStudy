@@ -23,7 +23,7 @@ import (
 //}
 
 func ConnectDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "root:Wei123456@@tcp(127.0.0.1:3306)/bookStore")
+	db, err := sql.Open("mysql", "root:Wei123456@@tcp(127.0.0.1:3306)/bookStore?charset=utf8mb4&parseTime=true&loc=Local")
 	if err != nil {
 		return nil, err
 	}

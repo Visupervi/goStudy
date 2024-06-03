@@ -187,6 +187,37 @@
 
     // console.log("changechange", res)
   }
+  function checkout(){
+    document.querySelector("#checkout-btn").addEventListener("click", async ()=>{
+      console.log("去结账");
+      // 只有存在购物车才可以去结账
+      if (this.cartId) {
+        let res = await request("/checkout", {
+          // id: id.toString(),
+          // bookCount
+          cartId: this.cartId,
+          userId: this.userId + ''
+        }, "post", "fetch")
+        // console.log("res", res)
+        if (res.status === 200) {
+          window.location = `/pages/cart/checkout.html?orderId=${res.data.id}`
+        }
+      } else {
+        alert("你还没购买任何商品，请先去浏览商品")
+      }
+
+    })
+  }
+
+  checkout()
+
+  // function getUserName() {
+  //   let user = JSON.parse(sessionStorage.getItem("user"));
+  //   // console.log("user", JSON.parse(user));
+  //   document.querySelector(".username").innerHTML = `<span style="color: orangered; font-size: 20px; font-weight: bold">${user.userName}</span>`
+  // }
+  //
+  // getUserName();
 </script>
 </body>
 </html>

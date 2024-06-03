@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"testing"
+	"time"
 )
 
 func TestMain(m *testing.M) {
@@ -26,8 +27,10 @@ func TestUser(t *testing.T) {
 	//t.Run("购物车测试", testCartAdd)
 	//t.Run("购物车项测试", testAddCartsItem)
 	//t.Run("测试获取购物车项", testGetCartItem)
-	t.Run("购物车获取测试", testGetCartItems)
+	//t.Run("购物车获取测试", testGetCartItems)
 	//t.Run("购物车获取测试", testGetCartByUid)
+	//t.Run("订单添加测试", testAddOder)
+	t.Run("订单列表测试", testGetOrders)
 }
 
 func testAddUser(t *testing.T) {
@@ -186,4 +189,61 @@ func testGetCartByUid(t *testing.T) {
 	cart, _ := GetCartByUid(1)
 
 	fmt.Println("cart", cart)
+}
+
+func testAddOder(t *testing.T) {
+	uuidValue := uuid.New()
+	o := &model.Order{
+		OrderId:     uuidValue.String(),
+		CreateTime:  time.Now(),
+		TotalAmount: 122.22,
+		TotalCount:  1,
+		State:       0,
+		UserId:      1,
+	}
+	AddOder(o)
+	//book := &model.Book{
+	//	Title: "三国演义",
+	//	Author: "罗贯中",
+	//	Price: 10,
+	//	ImgPath: "static/img.defautl.png",
+	//}
+	oi := &model.OrderItem{
+		Count:   10,
+		Amount:  100,
+		OrderId: uuidValue.String(),
+		Book: model.Book{
+			Title:   "三国演义",
+			Author:  "罗贯中",
+			Price:   10,
+			ImgPath: "static/img.default.png",
+		},
+	}
+
+	oi1 := &model.OrderItem{
+		Count:   1,
+		Amount:  22.22,
+		OrderId: uuidValue.String(),
+		Book: model.Book{
+			Title:   "水浒传",
+			Author:  "施耐庵",
+			Price:   22.22,
+			ImgPath: "static/img.default.png",
+		},
+	}
+	AddOderItem(oi)
+	AddOderItem(oi1)
+
+}
+
+func testAddOderItem(t *testing.T) {
+
+}
+
+func testGetOrders(t *testing.T) {
+	orders, _ := GetOrders()
+
+	for _, v := range orders {
+		fmt.Println("order", v)
+	}
 }

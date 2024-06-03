@@ -23,5 +23,7 @@ func RouterHandle() {
 	http.HandleFunc("/clearCart", controller.ClearCart)
 	http.HandleFunc("/deleteCartItem", controller.DeleteCartItemById)
 	http.HandleFunc("/updateCartItem", controller.UpdateCartItemById)
+	http.HandleFunc("/checkout", controller.Checkout)
+	http.HandleFunc("/getOrderList", controller.GetOrderList)
 	http.ListenAndServe(":9998", nil)
 }
