@@ -33,3 +33,5 @@ bookStore goWeb项目
 
 麻雀虽小五脏俱全，增、删、改、查都有。
 
+// 删除切片的其中一个
+cart.Items = append(cart.Items[:k], cart.Items[k+1:]...)

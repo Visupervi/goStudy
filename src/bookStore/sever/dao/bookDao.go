@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// GetBooksByPage 分页查询图书
 func GetBooksByPage(page int, limit int) (*model.PageResult, error) {
 	db, error := db.ConnectDB()
 
@@ -66,6 +67,7 @@ func GetBooksByPage(page int, limit int) (*model.PageResult, error) {
 	return pageResponse, nil
 }
 
+// GetBooks 获取所有图书
 func GetBooks() ([]*model.Book, error) {
 	db, error := db.ConnectDB()
 
@@ -89,6 +91,7 @@ func GetBooks() ([]*model.Book, error) {
 	return books, nil
 }
 
+// InsertBook 添加图书
 func InsertBook(b *model.Book) (err error) {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -105,6 +108,7 @@ func InsertBook(b *model.Book) (err error) {
 	return nil
 }
 
+// DeleteBook 删除图书
 func DeleteBook(id int) error {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -120,6 +124,7 @@ func DeleteBook(id int) error {
 	return nil
 }
 
+// UpdateBook 更新图书
 func UpdateBook(b *model.Book) error {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -136,6 +141,7 @@ func UpdateBook(b *model.Book) error {
 	return nil
 }
 
+// GetBookById 根据ID查询图书
 func GetBookById(id int) (*model.Book, error) {
 	db, error := db.ConnectDB()
 	if error != nil {

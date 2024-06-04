@@ -24,6 +24,7 @@ func AddOder(o *model.Order) error {
 	return nil
 }
 
+// GetOrderByUid 根据userId获取订单
 func GetOrderByUid(uId int) ([]*model.Order, error) {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -85,6 +86,7 @@ func UpdateOrder(o *model.Order) error {
 //	return nil
 //}
 
+// GetOrders 获取所有订单
 func GetOrders() ([]*model.Order, error) {
 	db, error := db.ConnectDB()
 
@@ -108,6 +110,7 @@ func GetOrders() ([]*model.Order, error) {
 	return orders, nil
 }
 
+// UpdateOrderState 更新订单状态
 func UpdateOrderState(state int, od string) error {
 	db, error := db.ConnectDB()
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// AddCart 添加购物车
 func AddCart(c *model.Cart) error {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -29,6 +30,7 @@ func AddCart(c *model.Cart) error {
 	return nil
 }
 
+// GetCartByUid 根据userId 获取购物车
 func GetCartByUid(uId int) (*model.Cart, error) {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -75,6 +77,7 @@ func UpdateCart(c *model.Cart) error {
 	return nil
 }
 
+// DeleteCart 删除购物车
 func DeleteCart(uId int, cartId string) error {
 	db, error := db.ConnectDB()
 	if error != nil {

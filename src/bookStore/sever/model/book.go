@@ -1,5 +1,6 @@
 package model
 
+// Book 图书实体类
 type Book struct {
 	ID      int     `json:"id"`
 	Title   string  `json:"title"`

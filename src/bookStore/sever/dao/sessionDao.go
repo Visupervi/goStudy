@@ -6,6 +6,7 @@ import (
 	"database/sql"
 )
 
+// AddSession 生成一个session
 func AddSession(session *model.Session) (res sql.Result, err error) {
 	//db.InitDB()
 	db, error := db.ConnectDB()
@@ -23,6 +24,7 @@ func AddSession(session *model.Session) (res sql.Result, err error) {
 	return res, err
 }
 
+// GetSessionById 根据sessionId获取session
 func GetSessionById(sessionId string) (*model.Session, error) {
 	db, error := db.ConnectDB()
 
@@ -38,6 +40,7 @@ func GetSessionById(sessionId string) (*model.Session, error) {
 	return session, err
 }
 
+// DeleteSession 删除session
 func DeleteSession(sessionId string) error {
 	db, error := db.ConnectDB()
 	if error != nil {

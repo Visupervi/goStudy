@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// Order 订单实体类
 type Order struct {
 	OrderId     string    `json:"id"`
 	CreateTime  time.Time `json:"createTime"`

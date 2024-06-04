@@ -1,5 +1,6 @@
 package model
 
+// Cart 购物车实体类
 type Cart struct {
 	TotalCount  int64       `json:"totalCount"`
 	TotalAmount float64     `json:"totalAmount"`

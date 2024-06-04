@@ -1,8 +1,6 @@
 package model
 
-// CartItem
-///**
-
+// CartItem 实体项实体类
 type CartItem struct {
 	Id     int64   `json:"id"`     // 购物项Id
 	Book   *Book   `json:"book"`   // 购物项图书信息

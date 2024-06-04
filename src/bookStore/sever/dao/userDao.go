@@ -7,6 +7,7 @@ import (
 	"fmt"
 )
 
+// AddUser 注册用户
 func AddUser(user *model.User) (res sql.Result, err error) {
 	//db.InitDB()
 	db, error := db.ConnectDB()
@@ -25,6 +26,7 @@ func AddUser(user *model.User) (res sql.Result, err error) {
 	return res, err
 }
 
+// GetUserById 根据id获取用户
 func GetUserById(key int) (*model.User, error) {
 	db, error := db.ConnectDB()
 
@@ -58,6 +60,7 @@ func GetUserById(key int) (*model.User, error) {
 	return user, nil
 }
 
+// GetUsers 获取所有用户
 func GetUsers(userName string, pwd string) (*model.User, error) {
 	db, error := db.ConnectDB()
 
@@ -73,6 +76,7 @@ func GetUsers(userName string, pwd string) (*model.User, error) {
 	return user, err
 }
 
+// GetUserByName 根据用户名获取用户
 func GetUserByName(username string) (*model.User, error) {
 	db, error := db.ConnectDB()
 

@@ -5,6 +5,7 @@ import (
 	"bookStore/sever/model"
 )
 
+// AddCartsItem 添加购物项
 func AddCartsItem(item *model.CartItem) error {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -24,6 +25,7 @@ func AddCartsItem(item *model.CartItem) error {
 	return nil
 }
 
+// DeleteCartItem 根据cartId删除购物项
 func DeleteCartItem(cartId string) error {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -39,6 +41,7 @@ func DeleteCartItem(cartId string) error {
 	return nil
 }
 
+// DeleteCartItemById 根据Id删除购物项
 func DeleteCartItemById(id string) error {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -54,6 +57,7 @@ func DeleteCartItemById(id string) error {
 	return nil
 }
 
+// GetCartItem 根据bookId获取购物项
 func GetCartItem(bookId int) (*model.CartItem, error) {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -77,6 +81,7 @@ func GetCartItem(bookId int) (*model.CartItem, error) {
 
 }
 
+// GetCartItemByUIdAndBookId 根据userId和bookId获取购物项
 func GetCartItemByUIdAndBookId(cartId string, bookId int) (*model.CartItem, error) {
 	db, error := db.ConnectDB()
 	if error != nil {
@@ -100,6 +105,7 @@ func GetCartItemByUIdAndBookId(cartId string, bookId int) (*model.CartItem, erro
 
 }
 
+// GetCartItems 获取所有购物项
 func GetCartItems(cId string) ([]*model.CartItem, error) {
 	db, error := db.ConnectDB()
 	if error != nil {
