@@ -104,3 +104,81 @@ func GetOrderList(w http.ResponseWriter, r *http.Request) {
 	str, _ := res.ResponseMsg(w, orders, http.StatusOK)
 	fmt.Fprintf(w, str)
 }
+
+func OrderDetail(w http.ResponseWriter, r *http.Request) {
+	utils.SetCorsHeader(w, r)
+	res := &model.BookStoreResult{}
+	// 根据请求body创建一个json解析器实例
+	decoder := json.NewDecoder(r.Body)
+	// 用于存放参数key=value数据
+	var params map[string]string
+
+	// 解析参数 存入map
+	err := decoder.Decode(&params)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	orderItems, err := service.GetOrderListByOrderId(params["orderId"])
+
+	if err != nil && orderItems == nil {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
+	}
+
+	str, _ := res.ResponseMsg(w, orderItems, http.StatusOK)
+	fmt.Fprintf(w, str)
+}
+
+func UpdateOrderState(w http.ResponseWriter, r *http.Request) {
+	utils.SetCorsHeader(w, r)
+	res := &model.BookStoreResult{}
+	// 根据请求body创建一个json解析器实例
+	decoder := json.NewDecoder(r.Body)
+	// 用于存放参数key=value数据
+	var params map[string]string
+
+	// 解析参数 存入map
+	err := decoder.Decode(&params)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	err = service.UpdateOrderState(utils.String2Int(params["state"]), params["orderId"])
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
+	}
+
+	str, _ := res.ResponseMsg(w, "success", http.StatusOK)
+	fmt.Fprintf(w, str)
+}
+
+func GetMyOrders(w http.ResponseWriter, r *http.Request) {
+	utils.SetCorsHeader(w, r)
+	res := &model.BookStoreResult{}
+	// 根据请求body创建一个json解析器实例
+	decoder := json.NewDecoder(r.Body)
+	// 用于存放参数key=value数据
+	var params map[string]string
+
+	// 解析参数 存入map
+	err := decoder.Decode(&params)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	orders, err := service.GetOrdersByUserId(utils.String2Int(params["userId"]))
+
+	if err != nil && orders != nil {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
+	}
+
+	str, _ := res.ResponseMsg(w, orders, http.StatusOK)
+	fmt.Fprintf(w, str)
+}

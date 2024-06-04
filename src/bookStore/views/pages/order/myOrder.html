@@ -9,7 +9,7 @@
 </head>
 <body>
 <div class="container">
-  <h1 class="my-4">订单管理</h1>
+  <h1 class="my-4">我的订单</h1>
   <!-- Modal -->
   <div class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -48,7 +48,7 @@
     <span style="width: 10px"></span>
     <a href="/pages/user/index.html">首页</a>
     <span style="width: 10px"></span>
-    <a href="/pages/manage/index.html">去管理图书</a>
+<!--    <a href="/pages/manage/index.html">去管理图书</a>-->
     <span style="width: 10px"></span>
     <!--    <a href="/pages/order/index.html">去订单管理</a>-->
     <span style="width: 10px"></span>
@@ -132,31 +132,39 @@
 
   // 加载订单列表
   async function loadOrders() {
+    let user = JSON.parse(sessionStorage.getItem("user"));
     const tableBody = document.querySelector('#ordersTable tbody');
     tableBody.innerHTML = '';
 
-    let res = await request("/getOrderList", {}, "post", "fetch")
+    let res = await request("/getMyOrders", {
+      userId: user.id + ""
+    }, "post", "fetch")
     //   <th>单号</th>
     // <th>日期</th>
     // <th>数量</th>
     // <th>金额</th>
     // <th>状态</th>
     // <th>操作</th>
-    res.data.forEach((order, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
+    if (res.data) {
+      res.data.forEach((order, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
                     <td>${order.id}</td>
                     <td>${formatTime(order.createTime)}</td>
                     <td>${order.totalCount}</td>
                     <td>${order.totalAmount}</td>
-                    <td>${order.state === 0 ? '未发货' : order.state === 1 ? '已发货' : '已确认收货'}</td>
+                    <td>${order.state === 0 ? '未发货' : order.state === 1 ? '已发货' : '已完成'}</td>
                     <td>
                         <button class="btn btn-info btn-sm" onclick="editOrder('${order.id}')">详情</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteOrder(event, '${order.id}')">${order.state === 0 ? '发货' : order.state === 1 ? '等待确认收货' : '已确认收货'}</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteOrder(event, '${order.id}')">${order.state === 0 ? '未发货' : order.state === 1 ? '确认收货' : '已完成'}</button>
                     </td>
                 `;
-      tableBody.appendChild(row);
-    });
+        tableBody.appendChild(row);
+      });
+    } else {
+      tableBody.innerHTML = "暂未查询到您的订单"
+    }
+
   }
 
   // // 添加新订单
@@ -204,14 +212,14 @@
     // console.log(e.target.innerHTML)
 
 
-    if (e.target.innerHTML === "发货") {
+    if (e.target.innerHTML === "确认收货") {
       let res = await request("/updateState", {
         orderId,
-        state: '1'
+        state: '2'
       }, "post", "fetch")
 
     } else {
-      alert("次订单已发货，请等待对方确认收货")
+      alert("次订单已发货或完成，不要重复操作")
     }
     await loadOrders();
 

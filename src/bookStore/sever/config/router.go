@@ -25,5 +25,8 @@ func RouterHandle() {
 	http.HandleFunc("/updateCartItem", controller.UpdateCartItemById)
 	http.HandleFunc("/checkout", controller.Checkout)
 	http.HandleFunc("/getOrderList", controller.GetOrderList)
+	http.HandleFunc("/orderDetail", controller.OrderDetail)
+	http.HandleFunc("/updateState", controller.UpdateOrderState)
+	http.HandleFunc("/getMyOrders", controller.GetMyOrders)
 	http.ListenAndServe(":9998", nil)
 }

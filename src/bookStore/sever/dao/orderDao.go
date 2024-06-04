@@ -24,7 +24,7 @@ func AddOder(o *model.Order) error {
 	return nil
 }
 
-func GetOrderByUid(uId int) (*model.Order, error) {
+func GetOrderByUid(uId int) ([]*model.Order, error) {
 	db, error := db.ConnectDB()
 	if error != nil {
 		return nil, error
@@ -32,23 +32,20 @@ func GetOrderByUid(uId int) (*model.Order, error) {
 	defer db.Close()
 	str := "select id,create_time,total_count,total_amount,state,user_id from orders where user_id = ?"
 
-	row := db.QueryRow(str, uId)
-
-	o := &model.Order{}
-	error = row.Scan(&o.OrderId, &o.CreateTime, &o.TotalCount, &o.TotalAmount, &o.State, &o.UserId)
-	if error != nil {
-		//fmt.Println("error", error)
-		return nil, error
+	rows, err := db.Query(str, uId)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
 	}
-	//items, err := GetCartItems(cart.CartId)
-	////fmt.Println("error", err)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//cart.Items = items
-
-	return o, nil
+	var orders []*model.Order
+	for rows.Next() {
+		//books = append(books,)
+		order := &model.Order{}
+		rows.Scan(&order.OrderId, &order.CreateTime, &order.TotalCount, &order.TotalAmount, &order.State, &order.UserId)
+		orders = append(orders, order)
+	}
+	return orders, nil
+	return orders, nil
 }
 
 // UpdateOrder 更新购物车
@@ -109,4 +106,21 @@ func GetOrders() ([]*model.Order, error) {
 		orders = append(orders, order)
 	}
 	return orders, nil
+}
+
+func UpdateOrderState(state int, od string) error {
+	db, error := db.ConnectDB()
+
+	if error != nil {
+		return error
+	}
+	defer db.Close()
+	sqlStr := "update orders set state=? where id =?"
+	_, err := db.Exec(sqlStr, state, od)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

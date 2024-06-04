@@ -30,7 +30,9 @@ func TestUser(t *testing.T) {
 	//t.Run("购物车获取测试", testGetCartItems)
 	//t.Run("购物车获取测试", testGetCartByUid)
 	//t.Run("订单添加测试", testAddOder)
-	t.Run("订单列表测试", testGetOrders)
+	//t.Run("订单列表测试", testGetOrders)
+	//t.Run("订单项测试", testGetOrdersByOrderId)
+	t.Run("获取我的订单测试", testGetOrderByUid)
 }
 
 func testAddUser(t *testing.T) {
@@ -236,12 +238,22 @@ func testAddOder(t *testing.T) {
 
 }
 
-func testAddOderItem(t *testing.T) {
-
+func testGetOrdersByOrderId(t *testing.T) {
+	orderItems, _ := GetOrdersByOrderId("c1409d1b-fd62-4247-859c-80c963344bf9")
+	for _, v := range orderItems {
+		fmt.Println("orderItem", v)
+	}
 }
 
 func testGetOrders(t *testing.T) {
 	orders, _ := GetOrders()
+
+	for _, v := range orders {
+		fmt.Println("order", v)
+	}
+}
+func testGetOrderByUid(t *testing.T) {
+	orders, _ := GetOrderByUid(8)
 
 	for _, v := range orders {
 		fmt.Println("order", v)

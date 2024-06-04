@@ -23,3 +23,27 @@ func AddOderItem(oi *model.OrderItem) error {
 	}
 	return nil
 }
+
+// GetOrdersByOrderId 根据订单号获取订单项
+func GetOrdersByOrderId(od string) ([]*model.OrderItem, error) {
+	db, error := db.ConnectDB()
+
+	if error != nil {
+		return nil, error
+	}
+	defer db.Close()
+	str := "select id,count,amount,title,author,price,img_path,order_id from order_items where order_id=?"
+	rows, err := db.Query(str, od)
+	defer rows.Close()
+	if err != nil {
+		return nil, err
+	}
+	var orderItems []*model.OrderItem
+	for rows.Next() {
+		//books = append(books,)
+		orderItem := &model.OrderItem{}
+		rows.Scan(&orderItem.OrderItemId, &orderItem.Count, &orderItem.Amount, &orderItem.Title, &orderItem.Author, &orderItem.Price, &orderItem.ImgPath, &orderItem.OrderId)
+		orderItems = append(orderItems, orderItem)
+	}
+	return orderItems, nil
+}
