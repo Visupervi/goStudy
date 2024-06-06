@@ -2,21 +2,22 @@ package dao
 
 import (
 	"github.com/google/uuid"
-	db2 "liveChat/server/db"
+	"liveChat/server/db"
+
+	//db "liveChat/server/db"
 	"liveChat/server/model"
 	"time"
 )
 
 func CreateTable() {
-	db, _ := db2.ConnectDB()
+	//db, _ := db2.ConnectDB()
 	// 开始映射
-	db.AutoMigrate(&model.UserBasic{})
+	db.DB.AutoMigrate(&model.UserBasic{})
 }
 
 func AddUserBasic() {
-	db, _ := db2.ConnectDB()
 	// Create
-	db.Create(&model.UserBasic{
+	db.DB.Create(&model.UserBasic{
 		Name:          "TomJerry",
 		Password:      "123456@",
 		Phone:         "15554332761",
@@ -33,6 +34,12 @@ func AddUserBasic() {
 }
 
 func Update(ub *model.UserBasic, k string, v interface{}) {
-	db, _ := db2.ConnectDB()
-	db.Model(ub).Update(k, v)
+	//db, _ := db2.ConnectDB()
+	db.DB.Model(ub).Update(k, v)
+}
+
+func GetUserList() []*model.UserBasic {
+	list := make([]*model.UserBasic, 10)
+	db.DB.Find(&list)
+	return list
 }
