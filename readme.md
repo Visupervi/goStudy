@@ -35,3 +35,8 @@ bookStore goWeb项目
 
 // 删除切片的其中一个
 cart.Items = append(cart.Items[:k], cart.Items[k+1:]...)
+
+
+使用gin开发实战
+
+liveChat
