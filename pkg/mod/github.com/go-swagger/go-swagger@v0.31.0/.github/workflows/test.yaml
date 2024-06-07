@@ -1,0 +1,391 @@
+name: Run CI
+
+env:
+  GOCOVMODE: atomic
+
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - master
+    paths-ignore:
+    - docs/*
+    - hack/hugo/*
+    - .github/workflows/update-doc.yaml
+
+  pull_request_target:
+
+#  pull_request:
+#    paths-ignore:
+#    - docs/*
+#    - hack/hugo/*
+#    - .github/workflows/update-doc.yaml
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          check-latest: true
+          cache: true
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          args: --verbose
+          only-new-issues: true
+          skip-cache: true
+          version: latest
+
+  build:
+    # description: |
+    #   Make sure we build and run elementary operations.
+    #   And that, at this moment, it still runs with go 1.20.
+    #   The full test suite warrants support for the 2 latest go minor releases.
+    needs: [lint]
+    strategy:
+      matrix:
+        go: ['1.20','oldstable','stable']
+        os: [ubuntu-latest, macos-latest, windows-latest, macos-13]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          check-latest: true
+          cache: true
+
+      - name: Build binary
+        run: |
+          go install ./cmd/swagger
+
+      - name: Verify that examples build
+        run: |
+          cd examples
+          go build ./...
+          go test ./...
+
+      - name: Run validation tests
+        run: |
+          swagger validate fixtures/bugs/2493/fixture-2492.json
+          swagger validate fixtures/bugs/2493/fixture-2493.json
+          swagger validate fixtures/bugs/2493/fixture-2492.yaml
+          swagger validate fixtures/bugs/2493/fixture-2493.yaml
+          swagger validate fixtures/bugs/2866/2866.yaml
+
+  test:
+    # description: |
+    #   Run unit tests on the 2 most recent go releases and 3 popular platforms.
+    needs: [lint]
+    strategy:
+      matrix:
+        go: ['oldstable','stable']
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        exclude:  # <- temporarily exclude go1.22.0 on windows. We hit this bug:https://github.com/golang/go/issues/65653
+          - go: stable
+            os: windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          check-latest: true
+          cache: true
+
+      - name: Install Tools
+        run: |
+          go install gotest.tools/gotestsum@latest
+
+      - name: Run unit tests with code coverage
+        run: >
+          gotestsum --
+          -p 1
+          -timeout=20m
+          -coverprofile='coverage-${{ matrix.os }}-${{ matrix.go }}.txt'
+          -covermode=atomic
+          -coverpkg=$(go list)/...
+          ./...
+
+      - name: Publish To Codecov
+        # retry after 30s whenever codecov servers experience delays.
+        # inspired by https://github.com/Kong/kubernetes-testing-framework/blob/230e26621db6af0d8543e784afb208e8c2a6b710/.github/workflows/tests.yaml#L57
+        # until retries are eventually natively supported by the codecov CLI: https://github.com/codecov/codecov-action/issues/926
+        uses: Wandalen/wretry.action@v3
+        with:
+          action: codecov/codecov-action@v4
+          attempt_limit: 10
+          attempt_delay: 30000
+          with: |
+            files: 'coverage-${{ matrix.os }}-${{ matrix.go }}.txt'
+            flags: 'unit-${{ matrix.go }}'
+            os: '${{ matrix.os }}'
+            fail_ci_if_error: true
+            verbose: true
+            # This secret is not passed on when triggered by PR from a fork: in this case,
+            # tokenless upload is used by the codecov CLI.
+            # It is used when running the workflow from pushed commits or tags on master.
+            token: ${{ secrets.CODECOV_TOKEN }}
+
+  codegen_test:
+    # description: |
+    #   Exercise go-swagger from the command line, with a bunch of specs
+    #   and several options (flatten/expand spec).
+    #
+    #   The test matrix applies to linux only. OS-specific quirks should
+    #   be covered by unit tests.
+    needs: [lint]
+    strategy:
+      matrix:
+        go: ['oldstable','stable']
+        os: [ubuntu-latest]
+        include:
+          - fixture: codegen-fixtures  # <- complex API specs to torture the code generator
+            args: "-skip-models -skip-full-flatten"
+          - fixture: canary-fixtures   # <- popular real-life API specs
+            args: "-skip-models -skip-full-flatten -skip-expand"
+    runs-on: ${{ matrix.os }}
+    env:
+      GOCOVERDIR: /tmp/cov
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+          check-latest: true
+          cache: true
+
+      - name: Install Tools
+        run: |
+          go get gotest.tools/icmd@latest
+          mkdir /tmp/cov
+
+      - name: Build binary with test coverage instrumentation
+        run: >
+          ./hack/build-docker.sh --github-action
+          -cover
+          -covermode=atomic
+          -coverpkg=$(go list)/...
+
+      - name: Run codegen tests
+        run: >
+          go test -v -timeout 30m -parallel 3
+          hack/codegen_nonreg_test.go
+          -args -fixture-file "${{ matrix.fixture }}.yaml" $${{ matrix.args }}
+      - name: Construct coverage reports from integration tests
+        run: >
+          go tool covdata textfmt
+          -i "${GOCOVERDIR}"
+          -o "codegen-coverage-${{ matrix.os }}-${{ matrix.go }}-${{ matrix.fixture }}.txt"
+
+      - name: Publish To Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: 'codegen-coverage-${{ matrix.os }}-${{ matrix.go }}-${{ matrix.fixture }}.txt'
+          flags: 'codegen-${{ matrix.go }}-${{ matrix.fixture }}'
+          os: '${{ matrix.os }}'
+          fail_ci_if_error: true
+          verbose: true
+          token: ${{ secrets.CODECOV_TOKEN }} # <- this secret is not passed on when triggered by PR from a fork
+
+  docker_dev:
+    needs: [lint, build, test, codegen_test]
+    if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            quay.io/goswagger/swagger
+            ghcr.io/go-swagger/go-swagger
+          tags: |
+            type=ref,event=branch
+            type=sha
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Quay Registry
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASS }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          build-args: |
+            commit_hash=${{ github.sha }}
+            tag_name=dev
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+
+  publish_release:
+    needs: [lint, build, test, codegen_test]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+          check-latest: true
+          cache: true
+
+      - name: Install Tools
+        run: |
+          go install github.com/aktau/github-release@latest
+          go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+
+      - name: Build release
+        run: |
+          set -x
+          rm -rf dist
+          mkdir -p dist/bin
+          mkdir -p dist/build
+
+          build_binary() {
+            LDFLAGS="-s -w -X github.com/$GITHUB_REPOSITORY/cmd/swagger/commands.Commit=${GITHUB_SHA}"
+            LDFLAGS="$LDFLAGS -X github.com/$GITHUB_REPOSITORY/cmd/swagger/commands.Version=${GITHUB_REF_NAME-dev}"
+            out="swagger_$1_$2"
+            if [[ $1 == "windows" ]]; then
+              out="${out}.exe"
+            fi
+            GOOS=$1 GOARCH=$2 CGO_ENABLED=0 go build -ldflags "$LDFLAGS" -o "./dist/bin/$out" ./cmd/swagger
+          }
+
+          go mod download
+
+          build_binary linux amd64
+          build_binary linux arm64
+          build_binary linux arm
+          build_binary linux ppc64le
+          build_binary linux s390x
+          build_binary darwin amd64
+          build_binary darwin arm64
+          build_binary windows amd64
+          build_binary windows arm64
+
+          nfpm p -p deb -t dist/build
+          nfpm p -p rpm -t dist/build
+
+          pushd dist/bin || exit 1
+          sha1sum * > sha1sum.txt
+          sha256sum * > sha256sum.txt
+          popd || exit 1
+
+      - name: Push RPM
+        id: push_rpm
+        uses: cloudsmith-io/action@master
+        with:
+          api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+          command: "push"
+          format: "rpm"
+          owner: "go-swagger"
+          repo: "go-swagger"
+          distro: "fedora"
+          release: "any-version"
+          file: "dist/build/swagger-*.x86_64.rpm"
+
+      - name: Push Deb
+        id: push
+        uses: cloudsmith-io/action@master
+        with:
+          api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+          command: "push"
+          format: "deb"
+          owner: "go-swagger"
+          repo: "go-swagger"
+          distro: "debian"
+          release: "any-version"
+          file: "dist/build/swagger_*_amd64.deb"
+
+      - name: Publish Binaries
+        uses: fnkr/github-action-ghr@v1
+        env:
+          GHR_PATH: dist/bin/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker:
+    needs: [lint, build, test, codegen_test]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            quay.io/goswagger/swagger
+            ghcr.io/go-swagger/go-swagger
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Quay Registry
+        uses: docker/login-action@v2
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASS }}
+
+      - name: Login to GitHub Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          build-args: |
+            commit_hash=${{ github.sha }}
+            tag_name=${{ github.ref_name }}
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le,linux/s390x
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}

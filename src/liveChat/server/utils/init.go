@@ -9,12 +9,12 @@ import (
 func InitConfig() {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("src/liveChat/server/config")
+	viper.AddConfigPath("../server/config")
 	err := viper.ReadInConfig()
 	if err != nil {
 		fmt.Println(err)
 	}
-	//fmt.Println("config", viper.Get("mysql"))
+	// fmt.Println("config", viper.Get("mysql"))
 }
 
 func InitMysql() {
