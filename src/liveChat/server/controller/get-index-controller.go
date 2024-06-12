@@ -28,9 +28,7 @@ func GetIndex(c *gin.Context) {
 // @Tags         用户模块
 // @Accept       json
 // @Produce      json
-// @Param        userName query string false "用户名"
-// @Param        password query string false "密码"
-// @Param        repassword query string false "确认密码"
+// @Param        user body model.UserRequestData false "用户注册信息"
 // @Success      200  {object}  model.ResponseData
 // @Failure      400  {object}  model.ResponseData
 // @Failure      404  {object}  model.ResponseData

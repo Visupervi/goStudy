@@ -5,6 +5,15 @@ definitions:
       status:
         type: integer
     type: object
+  model.UserRequestData:
+    properties:
+      password:
+        type: string
+      repassword:
+        type: string
+      userName:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -58,18 +67,11 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 用户名
-        in: query
-        name: userName
-        type: string
-      - description: 密码
-        in: query
-        name: password
-        type: string
-      - description: 确认密码
-        in: query
-        name: repassword
-        type: string
+      - description: 用户注册信息
+        in: body
+        name: user
+        schema:
+          $ref: '#/definitions/model.UserRequestData'
       produces:
       - application/json
       responses:

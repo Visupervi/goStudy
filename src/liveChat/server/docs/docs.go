@@ -99,22 +99,12 @@ const docTemplate = `{
                 "summary": "用户注册",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "用户名",
-                        "name": "userName",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "密码",
-                        "name": "password",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "确认密码",
-                        "name": "repassword",
-                        "in": "query"
+                        "description": "用户注册信息",
+                        "name": "user",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/model.UserRequestData"
+                        }
                     }
                 ],
                 "responses": {
@@ -153,6 +143,20 @@ const docTemplate = `{
                 "data": {},
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "model.UserRequestData": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "repassword": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
                 }
             }
         }
