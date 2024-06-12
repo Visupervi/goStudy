@@ -7,9 +7,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	"net/http"
 	"time"
+	"github.com/google/uuid"
 )
 
 func Checkout(w http.ResponseWriter, r *http.Request) {
