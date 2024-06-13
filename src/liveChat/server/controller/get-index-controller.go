@@ -101,7 +101,6 @@ func UpdateUser(c *gin.Context) {
 	json := make(map[string]interface{}) // 注意该结构接受的内容
 	c.BindJSON(&json)
 	// intNum, _ := strconv.Atoi(json["id"].(string))
-
 	fmt.Println("intNum", json["id"])
 	// uintNum := uint(intNum)
 	// fmt.Println("uintNum", uintNum)
