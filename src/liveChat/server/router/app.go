@@ -18,6 +18,6 @@ func App() *gin.Engine {
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.GET("/index", controller.GetIndex)
 	r.POST("/user/userRegistry", controller.UserRegistry)
-	r.POST("/user/deleteUser/:id", controller.DeleteUser)
+	r.DELETE("/user/deleteUser/:id", controller.DeleteUser)
 	return r
 }

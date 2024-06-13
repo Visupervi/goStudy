@@ -64,12 +64,12 @@ func UserRegistry(c *gin.Context) {
 // @Tags         用户模块
 // @Accept       json
 // @Produce      json
-// @Param        id query int false "用户id"
+// @Param        id path int false "用户id"
 // @Success      200  {object}  model.ResponseData
 // @Failure      400  {object}  model.ResponseData
 // @Failure      404  {object}  model.ResponseData
 // @Failure      500  {object}  model.ResponseData
-// @Router       /user/DeleteUser [delete]
+// @Router       /user/deleteUser/{id} [delete]
 func DeleteUser(c *gin.Context) {
 	// json := make(map[string]interface{}) // 注意该结构接受的内容
 	//

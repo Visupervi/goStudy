@@ -37,7 +37,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/DeleteUser": {
+        "/user/deleteUser/{id}": {
             "delete": {
                 "consumes": [
                     "application/json"
@@ -54,7 +54,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "用户id",
                         "name": "id",
-                        "in": "query"
+                        "in": "path"
                     }
                 ],
                 "responses": {
