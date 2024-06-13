@@ -18,3 +18,7 @@ func InsertUserToTable(user *model.UserBasic) *gorm.DB {
 func DeleteUserById(id uint) {
 	dao.DeleteUserById(id)
 }
+
+func UpdateUser(user *model.UserBasic) {
+	dao.UpdateUser(user)
+}

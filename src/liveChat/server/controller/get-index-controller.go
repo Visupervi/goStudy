@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"liveChat/server/dao"
 	"liveChat/server/model"
 	"liveChat/server/service"
@@ -80,6 +81,38 @@ func DeleteUser(c *gin.Context) {
 	res := &model.ResponseData{
 		Status: 200,
 		Data:   "删除成功",
+	}
+	c.JSON(200, res)
+}
+
+// UserUpdate godoc
+// @Summary      用户更新
+// @Tags         用户模块
+// @Accept       json
+// @Produce      json
+// @Param        user body model.UserRequestData false "用户更新信息"
+// @Success      200  {object}  model.ResponseData
+// @Failure      400  {object}  model.ResponseData
+// @Failure      404  {object}  model.ResponseData
+// @Failure      500  {object}  model.ResponseData
+// @Router       /user/updateUser [post]
+func UpdateUser(c *gin.Context) {
+	user := &model.UserBasic{}
+	json := make(map[string]interface{}) // 注意该结构接受的内容
+	c.BindJSON(&json)
+	// intNum, _ := strconv.Atoi(json["id"].(string))
+
+	fmt.Println("intNum", json["id"])
+	// uintNum := uint(intNum)
+	// fmt.Println("uintNum", uintNum)
+	// uint(json["id"].(float64))
+	user.ID = uint(json["id"].(float64))
+	user.Name = json["userName"].(string)
+	user.Password = json["password"].(string)
+	service.UpdateUser(user)
+	res := &model.ResponseData{
+		Status: 200,
+		Data:   "更新成功",
 	}
 	c.JSON(200, res)
 }

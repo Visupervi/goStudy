@@ -19,5 +19,6 @@ func App() *gin.Engine {
 	r.GET("/index", controller.GetIndex)
 	r.POST("/user/userRegistry", controller.UserRegistry)
 	r.DELETE("/user/deleteUser/:id", controller.DeleteUser)
+	r.POST("/user/updateUser", controller.UpdateUser)
 	return r
 }

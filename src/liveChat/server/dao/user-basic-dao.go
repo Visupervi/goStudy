@@ -34,3 +34,7 @@ func GetUserList() []*model.UserBasic {
 func DeleteUserById(id uint) {
 	db.DB.Delete(&model.UserBasic{}, id)
 }
+
+func UpdateUser(user *model.UserBasic) {
+	db.DB.Save(user)
+}
