@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -25,7 +26,7 @@ func ConnectDB() (err error) {
 		},
 	)
 
-	// fmt.Println(viper.GetString("mysql.dns"))
+	fmt.Println(viper.GetString("mysql.dns"))
 	DB, err = gorm.Open(mysql.Open(viper.GetString("mysql.dns")), &gorm.Config{Logger: newLogger})
 	if err != nil {
 		return err

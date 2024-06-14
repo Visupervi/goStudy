@@ -5,6 +5,8 @@ import (
 	"liveChat/server/dao"
 	"liveChat/server/model"
 	"liveChat/server/service"
+	"liveChat/server/utils"
+	"math/rand"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -39,6 +41,8 @@ func UserRegistry(c *gin.Context) {
 	user := &model.UserBasic{}
 	json := make(map[string]interface{}) // 注意该结构接受的内容
 	c.BindJSON(&json)
+	salt := fmt.Sprintf("%06d", rand.Int31())
+
 	// log.Printf("%v", &json)
 	if json["password"] != json["repassword"] {
 		res := &model.ResponseData{
@@ -46,10 +50,21 @@ func UserRegistry(c *gin.Context) {
 			Data:   "两次密码不一致",
 		}
 		c.JSON(0, res)
+		return
+	}
+	u := service.GetUserByName(json["userName"].(string))
+
+	if u.Name != "" {
+		res := &model.ResponseData{
+			Status: 0,
+			Data:   "用户名已存在",
+		}
+		c.JSON(0, res)
+		return
 	}
 
-	user.Password = json["password"].(string) // 类型断言
-	user.Name = json["userName"].(string)     // 类型断言
+	user.Password = utils.MakeRandomNum(json["password"].(string), salt) // 类型断言
+	user.Name = json["userName"].(string)                                // 类型断言
 
 	service.InsertUserToTable(user)
 	res := &model.ResponseData{
@@ -57,6 +72,7 @@ func UserRegistry(c *gin.Context) {
 		Data:   "添加成功",
 	}
 	c.JSON(200, res)
+	return
 
 }
 

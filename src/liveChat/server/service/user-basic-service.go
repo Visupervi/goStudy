@@ -22,3 +22,7 @@ func DeleteUserById(id uint) {
 func UpdateUser(user *model.UserBasic) {
 	dao.UpdateUser(user)
 }
+
+func GetUserByName(name string) *model.UserBasic {
+	return dao.GetUserByName(name)
+}
