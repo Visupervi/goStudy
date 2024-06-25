@@ -64,6 +64,38 @@ paths:
       summary: 删除用户
       tags:
       - 用户模块
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户登陆
+        in: body
+        name: user
+        schema:
+          $ref: '#/definitions/model.UserRequestData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ResponseData'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/model.ResponseData'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/model.ResponseData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/model.ResponseData'
+      summary: 用户登陆
+      tags:
+      - 用户模块
   /user/updateUser:
     post:
       consumes:

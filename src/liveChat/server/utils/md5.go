@@ -6,25 +6,27 @@ import (
 	"strings"
 )
 
-// 小写
+// Md5Encode 小写
 func Md5Encode(str string) string {
 	h := md5.New()
 	h.Write([]byte(str))
 	tempStr := h.Sum(nil)
+
+	//fmt.Println(hex.EncodeToString(tempStr))
 	return hex.EncodeToString(tempStr)
 }
 
-// 大写
-func MD5Cncode(str string) string {
+// MD5Encode 大写
+func MD5Encode(str string) string {
 	return strings.ToUpper(Md5Encode(str))
 }
 
-// 密码=MD5+随机数
+// MakeRandomNum 密码=MD5+随机数
 func MakeRandomNum(pwd, salt string) string {
 	return Md5Encode(pwd + salt)
 }
 
-// 密码解密
+// ValidPassword 密码解密
 func ValidPassword(pwd, salt string, password string) bool {
 	return Md5Encode(pwd+salt) == password
 }

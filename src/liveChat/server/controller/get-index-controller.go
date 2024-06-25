@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"liveChat/server/dao"
 	"liveChat/server/model"
 	"liveChat/server/service"
@@ -39,6 +40,7 @@ func GetIndex(c *gin.Context) {
 // @Router       /user/userRegistry [post]
 func UserRegistry(c *gin.Context) {
 	user := &model.UserBasic{}
+	uuidValue := uuid.New()
 	json := make(map[string]interface{}) // 注意该结构接受的内容
 	c.BindJSON(&json)
 	salt := fmt.Sprintf("%06d", rand.Int31())
@@ -65,7 +67,8 @@ func UserRegistry(c *gin.Context) {
 
 	user.Password = utils.MakeRandomNum(json["password"].(string), salt) // 类型断言
 	user.Name = json["userName"].(string)                                // 类型断言
-
+	user.Salt = salt
+	user.Identity = uuidValue.String()
 	service.InsertUserToTable(user)
 	res := &model.ResponseData{
 		Status: 200,
@@ -101,7 +104,7 @@ func DeleteUser(c *gin.Context) {
 	c.JSON(200, res)
 }
 
-// UserUpdate godoc
+// UpdateUser godoc
 // @Summary      用户更新
 // @Tags         用户模块
 // @Accept       json
@@ -117,10 +120,7 @@ func UpdateUser(c *gin.Context) {
 	json := make(map[string]interface{}) // 注意该结构接受的内容
 	c.BindJSON(&json)
 	// intNum, _ := strconv.Atoi(json["id"].(string))
-	fmt.Println("intNum", json["id"])
-	// uintNum := uint(intNum)
-	// fmt.Println("uintNum", uintNum)
-	// uint(json["id"].(float64))
+	// fmt.Println("intNum", json["id"])
 	user.ID = uint(json["id"].(float64))
 	user.Name = json["userName"].(string)
 	user.Password = json["password"].(string)
@@ -129,5 +129,45 @@ func UpdateUser(c *gin.Context) {
 		Status: 200,
 		Data:   "更新成功",
 	}
+	c.JSON(200, res)
+}
+
+// Login godoc
+// @Summary      用户登陆
+// @Tags         用户模块
+// @Accept       json
+// @Produce      json
+// @Param        user body model.UserRequestData false "用户登陆"
+// @Success      200  {object}  model.ResponseData
+// @Failure      400  {object}  model.ResponseData
+// @Failure      404  {object}  model.ResponseData
+// @Failure      500  {object}  model.ResponseData
+// @Router       /user/login [post]
+func Login(c *gin.Context) {
+	// user := &model.UserBasic{}
+	res := &model.ResponseData{}
+	json := make(map[string]interface{}) // 注意该结构接受的内容
+	c.BindJSON(&json)
+	user := service.GetUserByName(json["userName"].(string))
+
+	if user.Identity == "" {
+		res.Status = 0
+		res.Data = "用户不存在"
+	} else {
+		flag := utils.ValidPassword(json["password"].(string), user.Salt, user.Password)
+		if flag {
+			// res := &model.ResponseData{
+			// 	Status: 200,
+			// 	Data:   "更新成功",
+			// }
+			//
+			res.Status = 200
+			res.Data = "登陆成功"
+		} else {
+			res.Status = 0
+			res.Data = "登陆失败"
+		}
+	}
+
 	c.JSON(200, res)
 }

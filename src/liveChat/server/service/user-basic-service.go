@@ -26,3 +26,7 @@ func UpdateUser(user *model.UserBasic) {
 func GetUserByName(name string) *model.UserBasic {
 	return dao.GetUserByName(name)
 }
+
+func CheckUserByNameAndPwd(name string, password string) *model.UserBasic {
+	return dao.GetUserByNameAndPwd(name, password)
+}

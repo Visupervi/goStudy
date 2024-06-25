@@ -37,6 +37,11 @@ func GetUserByName(name string) *model.UserBasic {
 	return user
 }
 
+func GetUserByNameAndPwd(name string, password string) *model.UserBasic {
+	user := &model.UserBasic{}
+	db.DB.Where("name = ? and password = ?", name, password).First(user)
+	return user
+}
 func GetUserByPhone(tel string) *model.UserBasic {
 	user := &model.UserBasic{}
 	db.DB.Where("phone = ?", tel).First(user)
