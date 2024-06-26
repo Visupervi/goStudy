@@ -7,10 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-func CreateTable() {
-	dao.CreateTable()
-}
-
 func InsertUserToTable(user *model.UserBasic) *gorm.DB {
 	return dao.AddUserBasic(user)
 }

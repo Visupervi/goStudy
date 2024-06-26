@@ -2,18 +2,20 @@ package dao
 
 import (
 	"liveChat/server/db"
-	//db "liveChat/server/db"
-	"liveChat/server/model"
 
 	"gorm.io/gorm"
+
+	//db "liveChat/server/db"
+	"liveChat/server/model"
 )
 
-func CreateTable() {
-	//db, _ := db2.ConnectDB()
-	// 开始映射
-	//utils.InitMysql()
-	db.DB.AutoMigrate(&model.UserBasic{})
-}
+// func CreateTable() {
+// 	//db, _ := db2.ConnectDB()
+// 	// 开始映射
+// 	//utils.InitMysql()
+// 	//db.DB.AutoMigrate(&model.UserBasic{})
+// 	// db.DB.AutoMigrate(&model.Session{})
+// }
 
 func AddUserBasic(user *model.UserBasic) *gorm.DB {
 	// Create
@@ -22,7 +24,7 @@ func AddUserBasic(user *model.UserBasic) *gorm.DB {
 
 func Update(ub *model.UserBasic, k string, v interface{}) {
 	//db, _ := db2.ConnectDB()
-	db.DB.Model(ub).Update(k, v)
+	db.DB.Model(ub).Where("id=?", ub.ID).Update(k, v)
 }
 
 func GetUserList() []*model.UserBasic {

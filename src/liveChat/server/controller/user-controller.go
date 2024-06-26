@@ -1,7 +1,10 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/garyburd/redigo/redis"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"liveChat/server/dao"
 	"liveChat/server/model"
@@ -9,8 +12,6 @@ import (
 	"liveChat/server/utils"
 	"math/rand"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
 // GetIndex
@@ -145,22 +146,22 @@ func UpdateUser(c *gin.Context) {
 // @Router       /user/login [post]
 func Login(c *gin.Context) {
 	// user := &model.UserBasic{}
+	conn := utils.Pool.Get()
+	defer conn.Close()
 	res := &model.ResponseData{}
-	json := make(map[string]interface{}) // 注意该结构接受的内容
-	c.BindJSON(&json)
-	user := service.GetUserByName(json["userName"].(string))
+	result := make(map[string]interface{}) // 注意该结构接受的内容
+	c.BindJSON(&result)
+	user := service.GetUserByName(result["userName"].(string))
 
 	if user.Identity == "" {
 		res.Status = 0
 		res.Data = "用户不存在"
 	} else {
-		flag := utils.ValidPassword(json["password"].(string), user.Salt, user.Password)
+		flag := utils.ValidPassword(result["password"].(string), user.Salt, user.Password)
 		if flag {
-			// res := &model.ResponseData{
-			// 	Status: 200,
-			// 	Data:   "更新成功",
-			// }
-			//
+			data, _ := json.Marshal(user)
+			strData := string(data)
+			redis.String(conn.Do("hset", "user", user.Password, strData))
 			res.Status = 200
 			res.Data = "登陆成功"
 		} else {

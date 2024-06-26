@@ -1,3 +1,8 @@
 mysql:
   dns: "root:Wei123456@@tcp(127.0.0.1:3306)/live_chat?charset=utf8mb4&parseTime=true&loc=Local"
 
+redis:
+  address: "localhost:6379"
+  maxIdle: 16
+  maxActive: 0
+  duration: 300s
